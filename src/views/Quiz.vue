@@ -3,10 +3,10 @@
     <base-layout>
 
 
-      <ion-card v-if="question && !loading">
+      <ion-card v-if="question && !loading" color="">
         <ion-card-header>
           <ion-card-subtitle>
-            <ion-badge color="primary">{{ question.category }}</ion-badge>
+            <ion-badge color="tertiary">{{ question.category }}</ion-badge>
             <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">{{
                 question.difficulty
               }}
@@ -17,12 +17,12 @@
       </ion-card>
 
       <div v-if="question && !loading">
-        <ion-card v-for="ans in answers" v-bind:key="ans"
+        <ion-card v-for="(ans, i) in answers" v-bind:key="ans"
                   v-bind:color="getCardColor(ans)"
                   v-on:click="checkSolution(ans)">
           <ion-card-header>
             <ion-card-title>
-              {{ decoder(ans) }}
+             {{ decoder('(' +(i+1) + ') ' + ans) }}
             </ion-card-title>
             <ion-card-subtitle v-if="getCardColor(ans) === 'success' && rigth && finished">
               <b> Correct! +{{ points }} Points!</b>
@@ -36,7 +36,7 @@
       </ion-card>
 
       <div id="container">
-        <ion-button v-on:click="toHome" color="medium">
+        <ion-button v-on:click="toHome" color="light">
           return
         </ion-button>
         <ion-button v-if="finished" v-on:click="getNewQuestion">
@@ -157,7 +157,7 @@ export default {
       } else if (this.selected === ans && this.finished){
         return 'danger'
       }
-       return ''
+       return 'medium'
     }
   }
 }

@@ -10,7 +10,7 @@
     <slot/>
   </ion-content>
 
-  <ion-footer style="color: #1e2023">
+  <ion-footer>
     <ion-grid>
       <ion-row>
         <ion-col>
