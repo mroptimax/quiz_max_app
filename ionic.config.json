@@ -1,0 +1,7 @@
+{
+  "name": "Quiz Max",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}

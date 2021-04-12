@@ -1,0 +1,104 @@
+{
+  "categories": [
+    {
+      "param": "9",
+      "name": "General Knowledge"
+    },
+    {
+      "param": "10",
+      "name": "Entertainment: Books"
+    },
+    {
+      "param": "11",
+      "name": "Entertainment: Film"
+    },
+    {
+      "param": "12",
+      "name": "Entertainment: Music"
+    },
+    {
+      "param": "13",
+      "name": "Entertainment: Musicals & Theatres"
+    },
+    {
+      "param": "14",
+      "name": "Entertainment: Television"
+    },
+    {
+      "param": "15",
+      "name": "Entertainment: Video Games"
+    },
+    {
+      "param": "16",
+      "name": "Entertainment: Board Games"
+    },
+    {
+      "param": "17",
+      "name": "Science & Nature"
+    },
+    {
+      "param": "18",
+      "name": "Science: Computers"
+    },
+    {
+      "param": "19",
+      "name": "Science: Mathematics"
+    },
+    {
+      "param": "20",
+      "name": "Mythology"
+    },
+    {
+      "param": "21",
+      "name": "Sports"
+    },
+    {
+      "param": "22",
+      "name": "Geography"
+    },
+    {
+      "param": "23",
+      "name": "History"
+    },
+    {
+      "param": "24",
+      "name": "Politics"
+    },
+    {
+      "param": "25",
+      "name": "Art"
+    },
+    {
+      "param": "26",
+      "name": "Celebrities"
+    },
+    {
+      "param": "27",
+      "name": "Animals"
+    },
+    {
+      "param": "28",
+      "name": "Vehicles"
+    },
+    {
+      "param": "29",
+      "name": "Entertainment: Comics"
+    },
+    {
+      "param": "30",
+      "name": "Science: Gadgets"
+    },
+    {
+      "param": "30",
+      "name": "Science: Gadgets"
+    },
+    {
+      "param": "31",
+      "name": "Entertainment: Japanese Anime & Manga"
+    },
+    {
+      "param": "32",
+      "name": "Entertainment: Cartoon & Animations"
+    }
+  ]
+}
