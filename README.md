@@ -1,4 +1,4 @@
-**Terms & Conditions**
+#Terms & Conditions
 
 By downloading or using the app, these terms will automatically apply to you – you should make sure therefore that you
 read them carefully before using the app. You’re not allowed to copy, or modify the app, any part of the app, or our
@@ -60,12 +60,18 @@ changes. I will notify you of any changes by posting the new Terms and Condition
 
 These terms and conditions are effective as of 2021-04-19
 
+**Contact Us**
 
+If you have any questions or suggestions about my Terms and Conditions, do not hesitate to contact me at
+mroptimax.dev@gmail.com.
 
-**Privacy Policy**
+This Terms and Conditions page was generated
+by [App Privacy Policy Generator](https://app-privacy-policy-generator.nisrulz.com/)
 
-mroptimax built the Quiz Max app as a Free app. This SERVICE is provided by mroptimax at no cost and is intended for use
-as is.
+# Privacy Policy
+
+mroptimax built the Quiz Max app as an Open Source app. This SERVICE is provided by mroptimax at no cost and is intended
+for use as is.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal
 Information if anyone decided to use my Service.
