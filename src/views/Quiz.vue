@@ -22,7 +22,7 @@
                   v-on:click="checkSolution(ans)">
           <ion-card-header>
             <ion-card-title>
-             {{ decoder('(' +(i+1) + ') ' + ans) }}
+              {{ decoder('(' + (i + 1) + ') ' + ans) }}
             </ion-card-title>
             <ion-card-subtitle v-if="getCardColor(ans) === 'success' && rigth && finished">
               <b> Correct! +{{ points }} Points!</b>
@@ -52,6 +52,7 @@
 import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
 import {Plugins} from "@capacitor/core";
+import {addDataToStats} from "@/services/stats";
 
 const {Storage} = Plugins;
 
@@ -62,6 +63,7 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonButton,
+  IonSpinner
 } from "@ionic/vue";
 import {getQuestion} from "@/services/questions";
 
@@ -75,6 +77,7 @@ export default {
     IonCardSubtitle,
     IonCardTitle,
     IonButton,
+    IonSpinner
   },
   data() {
     return {
@@ -133,7 +136,7 @@ export default {
         points = points + add
         await Storage.set({key: 'points', value: String(points)})
       }
-
+      await addDataToStats(this.question.category, this.question.difficulty, this.rigth)
       this.finished = true
     },
     getNewQuestion() {
@@ -151,13 +154,13 @@ export default {
       textArea.innerHTML = str;
       return textArea.value;
     },
-    getCardColor(ans){
-      if (ans === this.question.correct_answer && this.finished){
+    getCardColor(ans) {
+      if (ans === this.question.correct_answer && this.finished) {
         return 'success'
-      } else if (this.selected === ans && this.finished){
+      } else if (this.selected === ans && this.finished) {
         return 'danger'
       }
-       return 'medium'
+      return 'medium'
     }
   }
 }

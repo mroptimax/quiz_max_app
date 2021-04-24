@@ -55,6 +55,7 @@ import {
 import BaseLayout from "@/views/base/BaseLayout";
 import {Plugins} from "@capacitor/core";
 import {getCategories} from "@/services/questions";
+import {setupStats} from "@/services/stats";
 
 const {Storage} = Plugins;
 
@@ -84,6 +85,8 @@ export default {
   async mounted() {
     this.settings.difficulty = (await Storage.get({key: 'difficulty'})).value
     this.settings.category = (await Storage.get({key: 'category'})).value
+    let stats = (await Storage.get({key: 'stats'})).value
+
     if (!this.settings.difficulty) {
       await Storage.set({key: 'difficulty', value: 'rand'})
       this.settings.difficulty = 'rand'
@@ -101,6 +104,9 @@ export default {
     } else {
       await Storage.set({key: 'points', value: '0'})
       this.points = 0
+    }
+    if (!stats) {
+      await setupStats()
     }
   },
   async updated() {
