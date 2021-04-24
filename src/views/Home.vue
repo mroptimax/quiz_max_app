@@ -90,7 +90,7 @@ export default {
     }
     if (!this.settings.category) {
       await Storage.set({key: 'category', value: 'rand'})
-      this.settings.difficulty = 'rand'
+      this.settings.category = 'rand'
     }
 
     this.categories = getCategories()
