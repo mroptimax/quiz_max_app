@@ -1,3 +1,4 @@
+# Available on [Google Play](https://play.google.com/store/apps/details?id=mroptimax.quiz.app)
 
 # Terms & Conditions
 
