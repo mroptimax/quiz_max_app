@@ -14,6 +14,7 @@
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
+
             <div v-for="(stats, cat) in stats" v-bind:key="cat">
               <div v-if=" cat !== 'count'">
                 <h4><b>{{ cat }}</b></h4>
@@ -32,7 +33,11 @@
         </ion-card>
 
       </div>
-
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button v-on:click="gotToStart">
+          <ion-icon :icon="returnDownBack"></ion-icon>
+        </ion-fab-button>
+      </ion-fab>
     </base-layout>
   </ion-page>
 </template>
@@ -40,6 +45,8 @@
 <script>
 import {IonSpinner, IonPage} from "@ionic/vue";
 import {Plugins} from "@capacitor/core";
+import {returnDownBack} from "ionicons/icons";
+import router from "@/router";
 
 const {Storage} = Plugins;
 
@@ -51,7 +58,8 @@ export default {
   data() {
     return {
       stats: null,
-      loading: true
+      loading: true,
+      returnDownBack
     }
   },
   async updated() {
@@ -64,6 +72,9 @@ export default {
     },
     getSum(right, wrong) {
       return right + wrong
+    },
+    gotToStart() {
+      router.push('/home');
     }
   }
 }

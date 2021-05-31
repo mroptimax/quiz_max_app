@@ -30,8 +30,15 @@
             <ion-card-title>
               {{ points }} Points
             </ion-card-title>
+            <ion-card-content>
+              <ion-button v-on:click="goToStats">
+                <ion-icon :icon="statsChart" size="medium"/>
+                Stats
+              </ion-button>
+            </ion-card-content>
           </ion-card-header>
         </ion-card>
+
         <ion-button size="large" expand="block" v-on:click="startQuiz">
           Start Quiz
         </ion-button>
@@ -42,6 +49,7 @@
 
 <script>
 import router from "@/router";
+import {statsChart} from "ionicons/icons";
 import {
   IonPage,
   IonSelect,
@@ -79,7 +87,8 @@ export default {
         difficulty: 'rand',
         category: 'rand'
       },
-      categories: []
+      categories: [],
+      statsChart
     }
   },
   async mounted() {
@@ -123,8 +132,11 @@ export default {
     async setCategory($event) {
       this.settings.category = $event.target.value
       await Storage.set({key: 'category', value: this.settings.category})
+    },
+    goToStats() {
+      router.push('/stats');
     }
-  },
+  }
 
 }
 </script>

@@ -3,11 +3,6 @@
   <ion-header :translucent="true">
     <ion-toolbar>
       <ion-title class="hcenter" v-on:click="gotToStart"> Quiz Max</ion-title>
-      <ion-buttons slot="end">
-        <ion-button v-on:click="goToStats">
-          <ion-icon :icon="statsChart" size="large"/>
-        </ion-button>
-      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
@@ -15,7 +10,7 @@
     <slot/>
   </ion-content>
 
-  <ion-footer style="color: white" >
+  <ion-footer style="color: white">
     <ion-grid>
       <ion-row>
         <ion-col>
@@ -30,7 +25,6 @@
 
 </template>
 <script>
-import {statsChart} from "ionicons/icons";
 import router from "@/router";
 import {
   IonHeader,
@@ -39,10 +33,7 @@ import {
   IonToolbar,
   IonFooter,
   IonCol,
-  IonRow,
-  IonIcon,
-  IonButton,
-  IonButtons
+  IonRow
 } from '@ionic/vue';
 
 
@@ -55,16 +46,14 @@ export default {
     IonToolbar,
     IonFooter,
     IonCol,
-    IonRow, IonIcon, IonButton, IonButtons
-  }, data() {
-    return {statsChart}
+    IonRow
+  },
+  data() {
+    return {}
   },
   methods: {
     gotToStart() {
       router.push('/home');
-    },
-    goToStats() {
-      router.push('/stats');
     }
   }
 }
