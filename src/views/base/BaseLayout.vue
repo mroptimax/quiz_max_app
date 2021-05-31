@@ -1,15 +1,18 @@
 <template>
 
+  <!-- Header -->
   <ion-header :translucent="true">
     <ion-toolbar>
       <ion-title class="hcenter" v-on:click="gotToStart"> Quiz Max</ion-title>
     </ion-toolbar>
   </ion-header>
 
+  <!-- Content -->
   <ion-content>
     <slot/>
   </ion-content>
 
+  <!-- Footer -->
   <ion-footer style="color: white" translucent="false">
     <ion-grid>
       <ion-row>

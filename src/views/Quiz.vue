@@ -2,21 +2,22 @@
   <ion-page>
     <base-layout>
 
-
-      <ion-card v-if="question && !loading" color="">
-        <ion-card-header>
-          <ion-card-subtitle>
-            <ion-badge color="tertiary">{{ question.category }}</ion-badge>
-            <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">{{
-                question.difficulty
-              }}
-            </ion-badge>
-          </ion-card-subtitle>
-          <ion-card-title>{{ decoder(question.question) }}</ion-card-title>
-        </ion-card-header>
-      </ion-card>
-
+      <!-- Question Loaded -->
       <div v-if="question && !loading">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>
+              <ion-badge color="tertiary">{{ question.category }}</ion-badge>
+              <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">{{
+                  question.difficulty
+                }}
+              </ion-badge>
+            </ion-card-subtitle>
+            <ion-card-title>{{ decoder(question.question) }}</ion-card-title>
+          </ion-card-header>
+        </ion-card>
+
+
         <ion-card v-for="(ans, i) in answers" v-bind:key="ans"
                   v-bind:color="getCardColor(ans)"
                   v-on:click="checkSolution(ans)">
@@ -31,10 +32,12 @@
         </ion-card>
       </div>
 
+      <!-- Loading -->
       <ion-card v-else class="hcenter">
         <ion-spinner name="crescent"/>
       </ion-card>
 
+      <!-- Nav Buttons -->
       <div id="container">
         <ion-button v-on:click="toHome" color="light">
           return

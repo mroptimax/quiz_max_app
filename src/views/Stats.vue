@@ -9,6 +9,7 @@
 
         <ion-card>
           <ion-card-header>
+            <!-- Total Stats -->
             <ion-card-title class="hcenter">
               Total of <b>{{ stats.count }}</b> Questions answered
               <p>{{Math.round(progressNum(getTotal(true), getTotal(false)) * 100)  }}% correct</p>
@@ -16,12 +17,14 @@
                                 v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
             </ion-card-title>
           </ion-card-header>
-          <ion-card-content>
 
+          <ion-card-content>
+          <!-- Each Category -->
             <div v-for="(stats, cat) in stats" v-bind:key="cat">
               <div v-if=" cat !== 'count'">
                 <h4><b>{{ cat }}</b></h4>
                 <ul>
+                  <!-- Category Total -->
                   <li>
                     <b>Total ({{ getCategoryTotal(stats,false) + getCategoryTotal(stats, true) }}):
                       {{ Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) * 100) }}%</b>
@@ -29,6 +32,8 @@
                                       color="primary"
                                       v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
                   </li>
+
+                  <!-- Each Difficulty in Category -->
                   <li v-for="(data, diff) in stats" v-bind:key="diff">
                     {{ diff }} ({{ getSum(data.right, data.wrong) }}):
                     {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
@@ -43,6 +48,7 @@
         </ion-card>
 
       </div>
+      <!-- Return Button -->
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button v-on:click="gotToStart">
           <ion-icon :icon="returnDownBack"></ion-icon>

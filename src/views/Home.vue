@@ -131,6 +131,9 @@ export default {
     startQuiz() {
       router.push('/quiz');
     },
+    goToStats() {
+      router.push('/stats');
+    },
     async setDifficulty($event) {
       this.settings.difficulty = $event.target.value
       await Storage.set({key: 'difficulty', value: this.settings.difficulty})
@@ -138,9 +141,6 @@ export default {
     async setCategory($event) {
       this.settings.category = $event.target.value
       await Storage.set({key: 'category', value: this.settings.category})
-    },
-    goToStats() {
-      router.push('/stats');
     }
   }
 

@@ -5,7 +5,10 @@ import categories from "/data/category.json";
 const {Storage} = Plugins;
 const APIURL = 'https://opentdb.com/api.php'
 
-
+/**
+ * Api Request for new Question
+ * @returns ApiResponse
+ */
 export async function getQuestion(){
     let difficulty = (await Storage.get({key: 'difficulty'})).value;
     let category = (await Storage.get({key: 'category'})).value;
@@ -30,7 +33,10 @@ export async function getQuestion(){
     })
 }
 
-
+/**
+ * returns all categories
+ * @returns categories
+ */
 export function getCategories(){
     return categories.categories
 }

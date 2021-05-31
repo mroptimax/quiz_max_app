@@ -3,7 +3,9 @@ import categories from "/data/category.json";
 
 const {Storage} = Plugins;
 
-
+/**
+ * Initial Setup for Stats
+ */
 export async function setupStats() {
     let stats = {}
 
@@ -30,6 +32,12 @@ export async function setupStats() {
     console.log('Stats initialized')
 }
 
+/**
+ *
+ * @param category
+ * @param difficulty
+ * @param right Bool
+ */
 export async function addDataToStats(category, difficulty, right){
     let stats = JSON.parse((await Storage.get({key: 'stats'})).value)
 
