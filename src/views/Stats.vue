@@ -9,8 +9,11 @@
 
         <ion-card>
           <ion-card-header>
-            <ion-card-title>
+            <ion-card-title class="hcenter">
               Total of <b>{{ stats.count }}</b> Questions answered
+              <p>{{Math.round(progressNum(getTotal(true), getTotal(false)) * 100)  }}% correct</p>
+              <ion-progress-bar :value="progressNum(getTotal(true), getTotal(false))" color="tertiary"
+                                v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
             </ion-card-title>
           </ion-card-header>
           <ion-card-content>
@@ -20,12 +23,16 @@
                 <h4><b>{{ cat }}</b></h4>
                 <ul>
                   <li>
-
+                    <b>Total ({{ getCategoryTotal(stats,false) + getCategoryTotal(stats, true) }}):
+                      {{ Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) * 100) }}%</b>
+                    <ion-progress-bar :value="progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false))"
+                                      color="primary"
+                                      v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
                   </li>
                   <li v-for="(data, diff) in stats" v-bind:key="diff">
                     {{ diff }} ({{ getSum(data.right, data.wrong) }}):
                     {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
-                    <ion-progress-bar :value="progressNum(data.right, data.wrong)" color="success"
+                    <ion-progress-bar :value="progressNum(data.right, data.wrong)" :color="getColor(diff)"
                                       v-if="getSum(data.right, data.wrong) > 0"></ion-progress-bar>
                   </li>
                 </ul>
@@ -94,6 +101,45 @@ export default {
     },
     gotToStart() {
       router.push('/home');
+    },
+    getColor(diff) {
+      switch (diff) {
+        case 'easy':
+          return 'success';
+        case 'medium':
+          return 'warning';
+        case 'hard':
+          return 'danger';
+        default:
+          return 'success';
+      }
+    },
+    getCategoryTotal(data, right) {
+      let sum = 0;
+      if (right){
+      sum += data.easy.right;
+      sum += data.medium.right;
+      sum += data.hard.right;}
+      else{
+        sum += data.easy.wrong;
+        sum += data.medium.wrong;
+        sum += data.hard.wrong;
+      }
+
+      return sum;
+    },
+    getTotal(right) {
+      let sum = 0;
+      for (const [key, data] of Object.entries(this.stats)) {
+        if (key !== 'count') {
+          if (right) {
+            sum += this.getCategoryTotal(data, true);
+          } else {
+            sum += this.getCategoryTotal(data, false);
+          }
+        }
+      }
+      return sum;
     }
   }
 }

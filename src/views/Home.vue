@@ -31,7 +31,7 @@
               {{ points }} Points
             </ion-card-title>
             <ion-card-content>
-              <ion-button v-on:click="goToStats">
+              <ion-button v-on:click="goToStats" expand="block">
                 <ion-icon :icon="statsChart" size="medium"/>
                 Stats
               </ion-button>
