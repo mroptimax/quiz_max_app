@@ -19,6 +19,9 @@
               <div v-if=" cat !== 'count'">
                 <h4><b>{{ cat }}</b></h4>
                 <ul>
+                  <li>
+
+                  </li>
                   <li v-for="(data, diff) in stats" v-bind:key="diff">
                     {{ diff }} ({{ getSum(data.right, data.wrong) }}):
                     {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
@@ -43,7 +46,16 @@
 </template>
 
 <script>
-import {IonSpinner, IonPage} from "@ionic/vue";
+import {
+  IonSpinner,
+  IonPage,
+  IonCard,
+  IonCardContent,
+  IonCardHeader,
+  IonFab,
+  IonFabButton,
+  IonIcon
+} from "@ionic/vue";
 import {Plugins} from "@capacitor/core";
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
@@ -53,7 +65,14 @@ const {Storage} = Plugins;
 export default {
   name: "Stats",
   components: {
-    IonSpinner, IonPage
+    IonSpinner,
+    IonPage,
+    IonCard,
+    IonCardContent,
+    IonCardHeader,
+    IonFab,
+    IonFabButton,
+    IonIcon
   },
   data() {
     return {

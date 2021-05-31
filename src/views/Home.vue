@@ -59,6 +59,9 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
+  IonCardContent,
+  IonIcon,
+  IonButton
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
 import {Plugins} from "@capacitor/core";
@@ -79,6 +82,9 @@ export default {
     IonCard,
     IonCardHeader,
     IonCardTitle,
+    IonCardContent,
+    IonIcon,
+    IonButton
   },
   data() {
     return {

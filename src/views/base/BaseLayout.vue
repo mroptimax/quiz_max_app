@@ -6,15 +6,15 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-content :fullscreen="true">
+  <ion-content>
     <slot/>
   </ion-content>
 
-  <ion-footer style="color: white">
+  <ion-footer style="color: white" translucent="false">
     <ion-grid>
       <ion-row>
         <ion-col>
-          v. 1.0.4
+          v. 1.0.5
         </ion-col>
         <ion-col>
           by mroptimax
