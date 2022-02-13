@@ -54,10 +54,9 @@
 <script>
 import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
-import {Plugins} from "@capacitor/core";
+import { Storage } from '@capacitor/storage';
 import {addDataToStats} from "@/services/stats";
 
-const {Storage} = Plugins;
 
 import {
   IonPage,

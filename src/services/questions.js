@@ -1,8 +1,7 @@
 import axios from "axios";
-import {Plugins} from "@capacitor/core";
+import { Storage } from '@capacitor/storage';
 import categories from "/data/category.json";
 
-const {Storage} = Plugins;
 const APIURL = 'https://opentdb.com/api.php'
 
 /**

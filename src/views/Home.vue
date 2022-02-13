@@ -64,11 +64,10 @@ import {
   IonButton
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
-import {Plugins} from "@capacitor/core";
+import { Storage } from '@capacitor/storage';
 import {getCategories} from "@/services/questions";
 import {setupStats} from "@/services/stats";
 
-const {Storage} = Plugins;
 
 export default {
   name: 'Home',

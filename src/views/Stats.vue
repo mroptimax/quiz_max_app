@@ -69,11 +69,10 @@ import {
   IonFabButton,
   IonIcon
 } from "@ionic/vue";
-import {Plugins} from "@capacitor/core";
+import { Storage } from '@capacitor/storage';
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
 
-const {Storage} = Plugins;
 
 export default {
   name: "Stats",

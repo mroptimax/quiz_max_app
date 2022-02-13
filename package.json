@@ -1,5 +1,5 @@
 {
-  "name": "Quiz_Max",
+  "name": "quiz_max",
   "version": "1.0.5",
   "private": true,
   "scripts": {
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "@capacitor/android": "^2.4.7",
-    "@capacitor/core": "2.4.7",
+    "@capacitor/core": "^3.4.1",
+    "@capacitor/storage": "^1.2.4",
     "@ionic/vue": "^5.4.0",
     "@ionic/vue-router": "^5.4.0",
     "axios": "^0.21.1",
@@ -21,7 +22,7 @@
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
-    "@capacitor/cli": "2.4.7",
+    "@capacitor/cli": "^3.4.1",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",

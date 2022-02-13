@@ -1,7 +1,7 @@
-import {Plugins} from "@capacitor/core";
+import { Storage } from '@capacitor/storage';
 import categories from "/data/category.json";
 
-const {Storage} = Plugins;
+
 
 /**
  * Initial Setup for Stats
@@ -38,13 +38,13 @@ export async function setupStats() {
  * @param difficulty
  * @param right Bool
  */
-export async function addDataToStats(category, difficulty, right){
+export async function addDataToStats(category, difficulty, right) {
     let stats = JSON.parse((await Storage.get({key: 'stats'})).value)
 
-    stats.count +=1
-    if (right){
+    stats.count += 1
+    if (right) {
         stats[category][difficulty].right += 1
-    }else {
+    } else {
         stats[category][difficulty].wrong += 1
     }
 
