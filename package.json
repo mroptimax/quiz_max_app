@@ -2,6 +2,7 @@
   "name": "quiz_max",
   "version": "1.0.5",
   "private": true,
+  "description": "Simple Quiz App",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -13,8 +14,9 @@
     "@capacitor/android": "^3.4.1",
     "@capacitor/core": "^3.4.1",
     "@capacitor/storage": "^1.2.4",
-    "@ionic/vue": "^5.4.0",
-    "@ionic/vue-router": "^5.4.0",
+    "@ionic/core": "^6.0.7",
+    "@ionic/vue": "^6.0.7",
+    "@ionic/vue-router": "^6.0.7",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
     "ionicons": "^5.5.1",
@@ -23,17 +25,22 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^3.4.1",
-    "@vue/cli-plugin-babel": "~4.5.0",
-    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
-    "@vue/cli-plugin-eslint": "~4.5.0",
-    "@vue/cli-plugin-router": "~4.5.0",
-    "@vue/cli-plugin-unit-jest": "~4.5.0",
-    "@vue/cli-service": "~4.5.0",
+    "@vue/cli-plugin-babel": "~5.0.0-rc.3",
+    "@vue/cli-plugin-e2e-cypress": "~5.0.0-rc.3",
+    "@vue/cli-plugin-eslint": "~5.0.0-rc.3",
+    "@vue/cli-plugin-router": "~5.0.0-rc.3",
+    "@vue/cli-plugin-unit-jest": "~5.0.0-rc.3",
+    "@vue/cli-service": "~5.0.0-rc.3",
     "@vue/compiler-sfc": "^3.0.0-0",
     "@vue/test-utils": "^2.0.0-0",
-    "eslint": "^6.7.2",
+    "cypress": "^8.3.0",
+    "eslint": "^7.5.0",
     "eslint-plugin-vue": "^7.0.0-0",
     "vue-jest": "^5.0.0-0"
   },
-  "description": "Simple Quiz App"
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!@ionic/vue|@ionic/vue-router|@ionic/core|@stencil/core|ionicons)"
+    ]
+  }
 }

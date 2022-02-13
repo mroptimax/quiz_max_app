@@ -4,7 +4,7 @@
 
       <ion-item>
         <ion-label>Difficulty:</ion-label>
-        <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Abbrechen"
+        <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setDifficulty">
           <ion-select-option value="rand">Random</ion-select-option>
           <ion-select-option value="easy">Easy</ion-select-option>
@@ -15,7 +15,7 @@
 
       <ion-item>
         <ion-label>Category:</ion-label>
-        <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Abbrechen"
+        <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setCategory">
           <ion-select-option value="rand">Random</ion-select-option>
           <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">

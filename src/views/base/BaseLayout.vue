@@ -17,7 +17,7 @@
     <ion-grid>
       <ion-row>
         <ion-col>
-          v. 1.0.5
+          v. 1.0.6
         </ion-col>
         <ion-col>
           by mroptimax
