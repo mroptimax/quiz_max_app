@@ -4,13 +4,12 @@
 
       <!-- Question Loaded -->
       <div v-if="question && !loading">
-        <ion-card>
+        <ion-card color="primary">
           <ion-card-header>
             <ion-card-subtitle>
               <ion-badge color="tertiary">{{ question.category }}</ion-badge>
-              <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">{{
-                  question.difficulty
-                }}
+              <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">
+                {{ question.difficulty }}
               </ion-badge>
             </ion-card-subtitle>
             <ion-card-title>{{ decoder(question.question) }}</ion-card-title>
@@ -18,12 +17,12 @@
         </ion-card>
 
 
-        <ion-card v-for="(ans, i) in answers" v-bind:key="ans"
+        <ion-card v-for="(ans) in answers" v-bind:key="ans"
                   v-bind:color="getCardColor(ans)"
                   v-on:click="checkSolution(ans)">
           <ion-card-header>
             <ion-card-title>
-              {{ decoder('(' + (i + 1) + ') ' + ans) }}
+              {{ decoder(ans) }}
             </ion-card-title>
             <ion-card-subtitle v-if="getCardColor(ans) === 'success' && rigth && finished">
               <b> Correct! +{{ points }} Points!</b>
@@ -39,10 +38,10 @@
 
       <!-- Nav Buttons -->
       <div id="container">
-        <ion-button v-on:click="toHome" color="light">
+        <ion-button size="large" v-on:click="toHome" color="light">
           return
         </ion-button>
-        <ion-button v-if="finished" v-on:click="getNewQuestion">
+        <ion-button size="large" v-if="finished" v-on:click="getNewQuestion" style="padding-left: 5px">
           continue
         </ion-button>
       </div>
@@ -54,7 +53,7 @@
 <script>
 import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
-import { Storage } from '@capacitor/storage';
+import {Storage} from '@capacitor/storage';
 import {addDataToStats} from "@/services/stats";
 
 
@@ -173,6 +172,6 @@ export default {
   text-align: center;
   left: 0;
   right: 0;
-  padding-top: 40px;
+  padding-top: 10px;
 }
 </style>
