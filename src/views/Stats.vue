@@ -12,40 +12,44 @@
             <!-- Total Stats -->
             <ion-card-title class="hcenter">
               Total of <b>{{ stats.count }}</b> Questions answered
-              <p>{{Math.round(progressNum(getTotal(true), getTotal(false)) * 100)  }}% correct</p>
-              <ion-progress-bar :value="progressNum(getTotal(true), getTotal(false))" color="tertiary"
-                                v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
             </ion-card-title>
           </ion-card-header>
 
           <ion-card-content>
-          <!-- Each Category -->
-            <div v-for="(stats, cat) in stats" v-bind:key="cat">
-              <div v-if=" cat !== 'count'">
-                <h4><b>{{ cat }}</b></h4>
-                <ul>
-                  <!-- Category Total -->
-                  <li>
-                    <b>Total ({{ getCategoryTotal(stats,false) + getCategoryTotal(stats, true) }}):
-                      {{ Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) * 100) }}%</b>
-                    <ion-progress-bar :value="progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false))"
-                                      color="primary"
-                                      v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
-                  </li>
-
-                  <!-- Each Difficulty in Category -->
-                  <li v-for="(data, diff) in stats" v-bind:key="diff">
-                    {{ diff }} ({{ getSum(data.right, data.wrong) }}):
-                    {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
-                    <ion-progress-bar :value="progressNum(data.right, data.wrong)" :color="getColor(diff)"
-                                      v-if="getSum(data.right, data.wrong) > 0"></ion-progress-bar>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
+            <b>{{getTotal(true)}} ({{ Math.round(progressNum(getTotal(true), getTotal(false)) * 100) }}%) correct</b>
+            <ion-progress-bar :value="progressNum(getTotal(true), getTotal(false))" color="tertiary"
+                              v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
           </ion-card-content>
         </ion-card>
+        <!-- Each Category -->
+        <div v-for="(stats, cat) in stats" v-bind:key="cat">
+          <div v-if=" cat !== 'count'">
+            <ion-item-divider>
+              <h4><b>{{ cat }}</b></h4>
+            </ion-item-divider>
+
+            <div style="padding: 10px">
+              <!-- Category Total -->
+              <div>
+                <b>Total ({{ getCategoryTotal(stats, false) + getCategoryTotal(stats, true) }}):
+                  {{Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats, false)) * 100)}}%</b>
+                <ion-progress-bar :value="progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false))"
+                                  color="primary"
+                                  v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
+              </div>
+
+              <!-- Each Difficulty in Category -->
+              <div v-for="(data, diff) in stats" v-bind:key="diff" >
+                <div v-if="getSum(data.right, data.wrong) > 0" style="padding: 10px">
+                  {{ diff }} ({{ getSum(data.right, data.wrong) }}):
+                  {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
+                  <ion-progress-bar :value="progressNum(data.right, data.wrong)" :color="getColor(diff)"></ion-progress-bar>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
 
       </div>
       <!-- Return Button -->
@@ -69,7 +73,7 @@ import {
   IonFabButton,
   IonIcon
 } from "@ionic/vue";
-import { Storage } from '@capacitor/storage';
+import {Storage} from '@capacitor/storage';
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
 
@@ -93,7 +97,13 @@ export default {
       returnDownBack
     }
   },
-  async updated() {
+  async mounted() {
+    this.loading = true
+    this.stats = JSON.parse((await Storage.get({key: 'stats'})).value)
+    this.loading = false
+  },
+  async ionViewDidEnter() {
+    this.loading = true
     this.stats = JSON.parse((await Storage.get({key: 'stats'})).value)
     this.loading = false
   },
@@ -121,11 +131,11 @@ export default {
     },
     getCategoryTotal(data, right) {
       let sum = 0;
-      if (right){
-      sum += data.easy.right;
-      sum += data.medium.right;
-      sum += data.hard.right;}
-      else{
+      if (right) {
+        sum += data.easy.right;
+        sum += data.medium.right;
+        sum += data.hard.right;
+      } else {
         sum += data.easy.wrong;
         sum += data.medium.wrong;
         sum += data.hard.wrong;

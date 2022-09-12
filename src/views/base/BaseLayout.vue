@@ -3,27 +3,29 @@
   <!-- Header -->
   <ion-header :translucent="true">
     <ion-toolbar>
-      <ion-title class="hcenter" v-on:click="gotToStart"> Quiz Max</ion-title>
+      <ion-title class="hcenter" v-on:click="gotToStart">Quiz Max</ion-title>
     </ion-toolbar>
   </ion-header>
 
   <!-- Content -->
-  <ion-content>
+  <ion-content mode="ios">
     <slot/>
   </ion-content>
 
   <!-- Footer -->
-  <ion-footer style="color: white" translucent="false">
-    <ion-grid>
-      <ion-row>
-        <ion-col>
-          v. 1.0.6
-        </ion-col>
-        <ion-col>
-          by mroptimax
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+  <ion-footer>
+    <ion-toolbar>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <b>v. 1.0.6</b>
+          </ion-col>
+          <ion-col>
+            <b>by mroptimax </b>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-toolbar>
   </ion-footer>
 
 </template>
