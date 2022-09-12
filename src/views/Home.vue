@@ -1,6 +1,7 @@
 <template>
   <ion-page>
     <base-layout>
+      <div id="container">
       <ion-card>
         <ion-card-header>
           <ion-card-title style="text-align: center">
@@ -16,7 +17,7 @@
       </ion-card>
 
 
-      <div id="container">
+
         <h2 style="text-align: center">Difficulty</h2>
 
         <ion-select class="selectStyle" v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
