@@ -18,10 +18,10 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <b>v. 1.0.6</b>
+            <b>v. 1.1.0</b>
           </ion-col>
           <ion-col>
-            <b>by mroptimax </b>
+            <b>by mroptimax</b>
           </ion-col>
         </ion-row>
       </ion-grid>
