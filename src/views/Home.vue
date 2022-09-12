@@ -1,47 +1,47 @@
 <template>
   <ion-page>
     <base-layout>
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title style="text-align: center">
+            {{ points }} Points
+          </ion-card-title>
+          <ion-card-content>
+            <ion-button v-on:click="goToStats" expand="block">
+              <ion-icon :icon="statsChart" size="medium"/>
+              Stats
+            </ion-button>
+          </ion-card-content>
+        </ion-card-header>
+      </ion-card>
 
-      <ion-item>
-        <ion-label>Difficulty:</ion-label>
-        <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
+
+      <div id="container">
+        <h2 style="text-align: center">Difficulty</h2>
+
+        <ion-select class="selectStyle" v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setDifficulty">
           <ion-select-option value="rand">Random</ion-select-option>
           <ion-select-option value="easy">Easy</ion-select-option>
           <ion-select-option value="medium">Medium</ion-select-option>
           <ion-select-option value="hard">Hard</ion-select-option>
         </ion-select>
-      </ion-item>
 
-      <ion-item>
-        <ion-label>Category:</ion-label>
-        <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
+
+        <h2 style="text-align: center">Category</h2>
+        <ion-select class="selectStyle" v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setCategory">
           <ion-select-option value="rand">Random</ion-select-option>
           <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
             {{ cat.name }}
           </ion-select-option>
         </ion-select>
-      </ion-item>
+        <div id="start_button_box">
+          <ion-button size="large" expand="block" v-on:click="startQuiz" color="success" id="start_button">
+            <b>Start Quiz</b>
+          </ion-button>
+        </div>
 
-      <div id="container">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>
-              {{ points }} Points
-            </ion-card-title>
-            <ion-card-content>
-              <ion-button v-on:click="goToStats" expand="block">
-                <ion-icon :icon="statsChart" size="medium"/>
-                Stats
-              </ion-button>
-            </ion-card-content>
-          </ion-card-header>
-        </ion-card>
-
-        <ion-button size="large" expand="block" v-on:click="startQuiz">
-          Start Quiz
-        </ion-button>
       </div>
     </base-layout>
   </ion-page>
@@ -54,8 +54,6 @@ import {
   IonPage,
   IonSelect,
   IonSelectOption,
-  IonItem,
-  IonLabel,
   IonCard,
   IonCardHeader,
   IonCardTitle,
@@ -64,7 +62,7 @@ import {
   IonButton
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
-import { Storage } from '@capacitor/storage';
+import {Storage} from '@capacitor/storage';
 import {getCategories} from "@/services/questions";
 import {setupStats} from "@/services/stats";
 
@@ -76,8 +74,6 @@ export default {
     IonPage,
     IonSelect,
     IonSelectOption,
-    IonItem,
-    IonLabel,
     IonCard,
     IonCardHeader,
     IonCardTitle,
@@ -173,5 +169,27 @@ export default {
 
 #container a {
   text-decoration: none;
+}
+
+#start_button_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#start_button {
+  padding: 0 15px;
+  width: 200px;
+  height: 150px;
+  --border-radius: 50%;
+  color: white;
+}
+
+.selectStyle {
+  background-color: rgba(56, 129, 255, 1);
+  color: white;
+  border-radius: 25px;
+  padding: 20px;
+  margin: 2px 20px 25px;
 }
 </style>
