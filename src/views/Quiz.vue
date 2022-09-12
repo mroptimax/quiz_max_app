@@ -64,7 +64,8 @@ import {
   IonCardSubtitle,
   IonCardTitle,
   IonButton,
-  IonSpinner
+  IonSpinner,
+    IonBadge
 } from "@ionic/vue";
 import {getQuestion} from "@/services/questions";
 
@@ -78,7 +79,8 @@ export default {
     IonCardSubtitle,
     IonCardTitle,
     IonButton,
-    IonSpinner
+    IonSpinner,
+      IonBadge
   },
   data() {
     return {

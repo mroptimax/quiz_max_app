@@ -16,7 +16,7 @@
           </ion-card-header>
 
           <ion-card-content>
-            <b>{{getTotal(true)}} ({{ Math.round(progressNum(getTotal(true), getTotal(false)) * 100) }}%) correct</b>
+            <b>{{ getTotal(true) }} ({{ Math.round(progressNum(getTotal(true), getTotal(false)) * 100) }}%) correct</b>
             <ion-progress-bar :value="progressNum(getTotal(true), getTotal(false))" color="tertiary"
                               v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
           </ion-card-content>
@@ -32,18 +32,19 @@
               <!-- Category Total -->
               <div>
                 <b>Total ({{ getCategoryTotal(stats, false) + getCategoryTotal(stats, true) }}):
-                  {{Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats, false)) * 100)}}%</b>
+                  {{ Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats, false)) * 100) }}%</b>
                 <ion-progress-bar :value="progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false))"
                                   color="primary"
                                   v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
               </div>
 
               <!-- Each Difficulty in Category -->
-              <div v-for="(data, diff) in stats" v-bind:key="diff" >
+              <div v-for="(data, diff) in stats" v-bind:key="diff">
                 <div v-if="getSum(data.right, data.wrong) > 0" style="padding: 10px">
                   {{ diff }} ({{ getSum(data.right, data.wrong) }}):
                   {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
-                  <ion-progress-bar :value="progressNum(data.right, data.wrong)" :color="getColor(diff)"></ion-progress-bar>
+                  <ion-progress-bar :value="progressNum(data.right, data.wrong)"
+                                    :color="getColor(diff)"></ion-progress-bar>
                 </div>
               </div>
             </div>
@@ -71,7 +72,7 @@ import {
   IonCardHeader,
   IonFab,
   IonFabButton,
-  IonIcon
+  IonIcon, IonItemDivider, IonProgressBar
 } from "@ionic/vue";
 import {Preferences} from '@capacitor/preferences';
 import {returnDownBack} from "ionicons/icons";
@@ -87,8 +88,8 @@ export default {
     IonCardContent,
     IonCardHeader,
     IonFab,
-    IonFabButton,
-    IonIcon
+    IonFabButton, IonProgressBar,
+    IonIcon, IonItemDivider
   },
   data() {
     return {
