@@ -3,7 +3,14 @@
   <!-- Header -->
   <ion-header :translucent="true">
     <ion-toolbar>
-      <ion-title class="hcenter" v-on:click="gotToStart">Quiz Max</ion-title>
+      <ion-row style="">
+        <ion-icon :icon="help" size="large"/>
+        <ion-title class="hcenter" v-on:click="gotToStart">
+          Quiz Max
+        </ion-title>
+        <ion-icon :icon="help" size="large"/>
+      </ion-row>
+
     </ion-toolbar>
   </ion-header>
 
@@ -38,9 +45,9 @@ import {
   IonToolbar,
   IonFooter,
   IonCol,
-  IonRow
+  IonRow, IonIcon
 } from '@ionic/vue';
-
+import {help} from "ionicons/icons";
 
 export default {
   name: "BaseLayout",
@@ -51,10 +58,13 @@ export default {
     IonToolbar,
     IonFooter,
     IonCol,
-    IonRow
+    IonRow,
+    IonIcon
   },
   data() {
-    return {}
+    return {
+      help
+    }
   },
   methods: {
     gotToStart() {

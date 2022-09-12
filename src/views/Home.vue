@@ -18,7 +18,7 @@
 
 
 
-        <h2 style="text-align: center">Difficulty</h2>
+        <h2 style="text-align: center"><b>Difficulty</b></h2>
 
         <ion-select class="selectStyle" v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setDifficulty">
@@ -29,7 +29,7 @@
         </ion-select>
 
 
-        <h2 style="text-align: center">Category</h2>
+        <h2 style="text-align: center"><b>Category</b></h2>
         <ion-select class="selectStyle" v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setCategory">
           <ion-select-option value="rand">Random</ion-select-option>
