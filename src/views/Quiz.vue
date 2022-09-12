@@ -53,7 +53,7 @@
 <script>
 import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
-import {Storage} from '@capacitor/storage';
+import {Preferences} from '@capacitor/preferences';
 import {addDataToStats} from "@/services/stats";
 
 
@@ -133,9 +133,9 @@ export default {
       }
       this.points = add
       if (this.rigth) {
-        let points = parseInt((await Storage.get({key: 'points'})).value)
+        let points = parseInt((await Preferences.get({key: 'points'})).value)
         points = points + add
-        await Storage.set({key: 'points', value: String(points)})
+        await Preferences.set({key: 'points', value: String(points)})
       }
       await addDataToStats(this.question.category, this.question.difficulty, this.rigth)
       this.finished = true

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import categories from "/data/category.json";
 
 const APIURL = 'https://opentdb.com/api.php'
@@ -9,8 +9,8 @@ const APIURL = 'https://opentdb.com/api.php'
  * @returns ApiResponse
  */
 export async function getQuestion(){
-    let difficulty = (await Storage.get({key: 'difficulty'})).value;
-    let category = (await Storage.get({key: 'category'})).value;
+    let difficulty = (await Preferences.get({key: 'difficulty'})).value;
+    let category = (await Preferences.get({key: 'category'})).value;
 
     let params = {
         amount: 1,

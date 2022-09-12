@@ -1,4 +1,4 @@
-import { Storage } from '@capacitor/storage';
+import { Preferences } from '@capacitor/preferences';
 import categories from "/data/category.json";
 
 
@@ -28,7 +28,7 @@ export async function setupStats() {
         }
     })
 
-    await Storage.set({key: 'stats', value: JSON.stringify(stats)})
+    await Preferences.set({key: 'stats', value: JSON.stringify(stats)})
     console.log('Stats initialized')
 }
 
@@ -39,7 +39,7 @@ export async function setupStats() {
  * @param right Bool
  */
 export async function addDataToStats(category, difficulty, right) {
-    let stats = JSON.parse((await Storage.get({key: 'stats'})).value)
+    let stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
 
     stats.count += 1
     if (right) {
@@ -48,5 +48,5 @@ export async function addDataToStats(category, difficulty, right) {
         stats[category][difficulty].wrong += 1
     }
 
-    await Storage.set({key: 'stats', value: JSON.stringify(stats)})
+    await Preferences.set({key: 'stats', value: JSON.stringify(stats)})
 }

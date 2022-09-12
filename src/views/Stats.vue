@@ -73,7 +73,7 @@ import {
   IonFabButton,
   IonIcon
 } from "@ionic/vue";
-import {Storage} from '@capacitor/storage';
+import {Preferences} from '@capacitor/preferences';
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
 
@@ -99,12 +99,12 @@ export default {
   },
   async mounted() {
     this.loading = true
-    this.stats = JSON.parse((await Storage.get({key: 'stats'})).value)
+    this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
     this.loading = false
   },
   async ionViewDidEnter() {
     this.loading = true
-    this.stats = JSON.parse((await Storage.get({key: 'stats'})).value)
+    this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
     this.loading = false
   },
   methods: {

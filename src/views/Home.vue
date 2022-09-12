@@ -63,7 +63,7 @@ import {
   IonButton
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
-import {Storage} from '@capacitor/storage';
+import {Preferences} from '@capacitor/preferences';
 import {getCategories} from "@/services/questions";
 import {setupStats} from "@/services/stats";
 
@@ -94,26 +94,26 @@ export default {
     }
   },
   async mounted() {
-    this.settings.difficulty = (await Storage.get({key: 'difficulty'})).value
-    this.settings.category = (await Storage.get({key: 'category'})).value
-    let stats = (await Storage.get({key: 'stats'})).value
+    this.settings.difficulty = (await Preferences.get({key: 'difficulty'})).value
+    this.settings.category = (await Preferences.get({key: 'category'})).value
+    let stats = (await Preferences.get({key: 'stats'})).value
 
     if (!this.settings.difficulty) {
-      await Storage.set({key: 'difficulty', value: 'rand'})
+      await Preferences.set({key: 'difficulty', value: 'rand'})
       this.settings.difficulty = 'rand'
     }
     if (!this.settings.category) {
-      await Storage.set({key: 'category', value: 'rand'})
+      await Preferences.set({key: 'category', value: 'rand'})
       this.settings.category = 'rand'
     }
 
     this.categories = getCategories()
 
-    const points = (await Storage.get({key: 'points'})).value
+    const points = (await Preferences.get({key: 'points'})).value
     if (points) {
       this.points = points
     } else {
-      await Storage.set({key: 'points', value: '0'})
+      await Preferences.set({key: 'points', value: '0'})
       this.points = 0
     }
     if (!stats) {
@@ -121,7 +121,7 @@ export default {
     }
   },
   async updated() {
-    this.points = (await Storage.get({key: 'points'})).value
+    this.points = (await Preferences.get({key: 'points'})).value
   },
   methods: {
     startQuiz() {
@@ -132,11 +132,11 @@ export default {
     },
     async setDifficulty($event) {
       this.settings.difficulty = $event.target.value
-      await Storage.set({key: 'difficulty', value: this.settings.difficulty})
+      await Preferences.set({key: 'difficulty', value: this.settings.difficulty})
     },
     async setCategory($event) {
       this.settings.category = $event.target.value
-      await Storage.set({key: 'category', value: this.settings.category})
+      await Preferences.set({key: 'category', value: this.settings.category})
     }
   }
 
