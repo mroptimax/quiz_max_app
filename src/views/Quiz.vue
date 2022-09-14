@@ -12,22 +12,23 @@
                 {{ question.difficulty }}
               </ion-badge>
             </ion-card-subtitle>
-            <ion-card-title>{{ decoder(question.question) }}</ion-card-title>
+
           </ion-card-header>
+          <ion-card-content>
+            <h2>{{ decoder(question.question) }}</h2>
+          </ion-card-content>
         </ion-card>
 
 
         <ion-card v-for="(ans) in answers" v-bind:key="ans"
                   v-bind:color="getCardColor(ans)"
                   v-on:click="checkSolution(ans)">
-          <ion-card-header>
-            <ion-card-title>
-              {{ decoder(ans) }}
-            </ion-card-title>
+          <ion-card-content>
             <ion-card-subtitle v-if="getCardColor(ans) === 'success' && rigth && finished">
               <b> Correct! +{{ points }} Points!</b>
             </ion-card-subtitle>
-          </ion-card-header>
+            <h2> {{ decoder(ans) }}</h2>
+          </ion-card-content>
         </ion-card>
       </div>
 
@@ -62,10 +63,10 @@ import {
   IonCard,
   IonCardHeader,
   IonCardSubtitle,
-  IonCardTitle,
   IonButton,
   IonSpinner,
-    IonBadge
+  IonBadge,
+  IonCardContent
 } from "@ionic/vue";
 import {getQuestion} from "@/services/questions";
 
@@ -77,10 +78,10 @@ export default {
     IonCard,
     IonCardHeader,
     IonCardSubtitle,
-    IonCardTitle,
     IonButton,
     IonSpinner,
-      IonBadge
+    IonBadge,
+    IonCardContent
   },
   data() {
     return {
