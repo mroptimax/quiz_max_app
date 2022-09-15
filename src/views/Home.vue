@@ -2,24 +2,21 @@
   <ion-page>
     <base-layout>
       <div id="container">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title style="text-align: center">
-            {{ points }} Points
-          </ion-card-title>
-          <ion-card-content>
-            <ion-button v-on:click="goToStats" expand="block">
-              <ion-icon :icon="statsChart" size="medium"/>
-              Stats
-            </ion-button>
-          </ion-card-content>
-        </ion-card-header>
-      </ion-card>
-
-
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title style="text-align: center">
+              {{ points }} Points
+            </ion-card-title>
+            <ion-card-content>
+              <ion-button v-on:click="goToStats" expand="block">
+                <ion-icon :icon="statsChart" size="medium"/>
+                Stats
+              </ion-button>
+            </ion-card-content>
+          </ion-card-header>
+        </ion-card>
 
         <h2 style="text-align: center"><b>Difficulty</b></h2>
-
         <ion-select class="selectStyle" v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
                     @ionChange="setDifficulty">
           <ion-select-option value="rand">Random</ion-select-option>
@@ -27,7 +24,6 @@
           <ion-select-option value="medium">Medium</ion-select-option>
           <ion-select-option value="hard">Hard</ion-select-option>
         </ion-select>
-
 
         <h2 style="text-align: center"><b>Category</b></h2>
         <ion-select class="selectStyle" v-model="settings.category" interface="action-sheet" cancel-text="Cancel"

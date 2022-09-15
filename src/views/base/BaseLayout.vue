@@ -25,7 +25,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <b>v. 1.1.0</b>
+            <b>v. 1.1.1</b>
           </ion-col>
           <ion-col>
             <b>by mroptimax</b>
@@ -45,7 +45,7 @@ import {
   IonToolbar,
   IonFooter,
   IonCol,
-  IonRow, IonIcon
+  IonRow, IonIcon, IonGrid
 } from '@ionic/vue';
 import {help} from "ionicons/icons";
 
@@ -59,7 +59,7 @@ export default {
     IonFooter,
     IonCol,
     IonRow,
-    IonIcon
+    IonIcon, IonGrid
   },
   data() {
     return {
