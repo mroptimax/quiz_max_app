@@ -17,22 +17,27 @@
         </ion-card>
 
         <h2 style="text-align: center"><b>Difficulty</b></h2>
-        <ion-select class="selectStyle" v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
-                    @ionChange="setDifficulty">
-          <ion-select-option value="rand">Random</ion-select-option>
-          <ion-select-option value="easy">Easy</ion-select-option>
-          <ion-select-option value="medium">Medium</ion-select-option>
-          <ion-select-option value="hard">Hard</ion-select-option>
-        </ion-select>
+        <ion-item lines="full">
+          <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
+                      @ionChange="setDifficulty">
+            <ion-select-option value="rand">Random</ion-select-option>
+            <ion-select-option value="easy">Easy</ion-select-option>
+            <ion-select-option value="medium">Medium</ion-select-option>
+            <ion-select-option value="hard">Hard</ion-select-option>
+          </ion-select>
+        </ion-item>
 
         <h2 style="text-align: center"><b>Category</b></h2>
-        <ion-select class="selectStyle" v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
-                    @ionChange="setCategory">
-          <ion-select-option value="rand">Random</ion-select-option>
-          <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
-            {{ cat.name }}
-          </ion-select-option>
-        </ion-select>
+        <ion-item lines="full">
+          <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
+                      @ionChange="setCategory">
+            <ion-select-option value="rand">Random</ion-select-option>
+            <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
+              {{ cat.name }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
         <div id="start_button_box">
           <ion-button size="large" expand="block" v-on:click="startQuiz" color="success" id="start_button">
             <b>Start Quiz</b>
@@ -56,7 +61,7 @@ import {
   IonCardTitle,
   IonCardContent,
   IonIcon,
-  IonButton
+  IonButton, IonItem
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
 import {Preferences} from '@capacitor/preferences';
@@ -65,7 +70,7 @@ import {setupStats} from "@/services/stats";
 
 
 export default {
-  name: 'Home',
+  name: 'HomePage',
   components: {
     BaseLayout,
     IonPage,
@@ -76,7 +81,7 @@ export default {
     IonCardTitle,
     IonCardContent,
     IonIcon,
-    IonButton
+    IonButton, IonItem
   },
   data() {
     return {
@@ -142,7 +147,6 @@ export default {
 <style scoped>
 #container {
   text-align: center;
-
   position: absolute;
   left: 0;
   right: 0;
@@ -182,11 +186,4 @@ export default {
   color: white;
 }
 
-.selectStyle {
-  background-color: rgba(56, 129, 255, 1);
-  color: white;
-  border-radius: 25px;
-  padding: 20px;
-  margin: 2px 20px 25px;
-}
 </style>

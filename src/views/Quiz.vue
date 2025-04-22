@@ -7,7 +7,7 @@
         <ion-card color="primary">
           <ion-card-header>
             <ion-card-subtitle>
-              <ion-badge color="tertiary">{{ question.category }}</ion-badge>
+              <ion-badge color="tertiary"><span v-html="question.category"></span></ion-badge>
               <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">
                 {{ question.difficulty }}
               </ion-badge>
@@ -18,7 +18,6 @@
             <h2>{{ decoder(question.question) }}</h2>
           </ion-card-content>
         </ion-card>
-
 
         <ion-card v-for="(ans) in answers" v-bind:key="ans"
                   v-bind:color="getCardColor(ans)"
@@ -56,7 +55,7 @@ import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
 import {Preferences} from '@capacitor/preferences';
 import {addDataToStats} from "@/services/stats";
-
+import {getQuestions} from "@/services/questions";
 
 import {
   IonPage,
@@ -68,10 +67,9 @@ import {
   IonBadge,
   IonCardContent
 } from "@ionic/vue";
-import {getQuestion} from "@/services/questions";
 
 export default {
-  name: "Quiz",
+  name: "QuizPage",
   components: {
     BaseLayout,
     IonPage,
@@ -91,10 +89,16 @@ export default {
       selected: null,
       rigth: true,
       loading: false,
-      points: 0
+      points: 0,
+      loadedQuestions: [],
     }
   },
   mounted() {
+    this.loadedQuestions = []
+    this.getNewQuestion()
+  },
+  ionViewDidEnter() {
+    this.loadedQuestions = []
     this.getNewQuestion()
   },
   methods: {
@@ -146,11 +150,22 @@ export default {
     getNewQuestion() {
       this.loading = true
       this.answers = []
-      getQuestion().then((res) => {
-        this.question = res.data.results[0]
+      if (this.loadedQuestions.length > 0) {
+        this.question = this.loadedQuestions.pop()
         this.mixAnswers()
         this.finished = false
         this.loading = false
+        return
+      }
+      getQuestions().then((res) => {
+        this.loadedQuestions = res.data.results
+        this.question = this.loadedQuestions.pop()
+        this.mixAnswers()
+        this.finished = false
+        this.loading = false
+      }).catch(async (err) => {
+        console.log(err)
+        setTimeout(() => {this.getNewQuestion()},5000);
       })
     },
     decoder(str) {
@@ -166,7 +181,7 @@ export default {
       }
       return 'medium'
     }
-  }
+  },
 }
 </script>
 

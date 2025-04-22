@@ -18,7 +18,8 @@
     },
     {
       "param": "13",
-      "name": "Entertainment: Musicals & Theatres"
+      "name": "Entertainment: Musicals & Theatres",
+      "raw": "Entertainment: Musicals &amp; Theatres"
     },
     {
       "param": "14",
@@ -34,7 +35,8 @@
     },
     {
       "param": "17",
-      "name": "Science & Nature"
+      "name": "Science & Nature",
+      "raw": "Science &amp; Nature"
     },
     {
       "param": "18",
@@ -90,11 +92,13 @@
     },
     {
       "param": "31",
-      "name": "Entertainment: Japanese Anime & Manga"
+      "name": "Entertainment: Japanese Anime & Manga",
+      "raw": "Entertainment: Japanese Anime &amp; Manga"
     },
     {
       "param": "32",
-      "name": "Entertainment: Cartoon & Animations"
+      "name": "Entertainment: Cartoon & Animations",
+      "raw": "Entertainment: Cartoon &amp; Animations"
     }
   ]
 }

@@ -60,7 +60,7 @@ if needed) delete it from your device.
 I may update our Terms and Conditions from time to time. Thus, you are advised to review this page periodically for any
 changes. I will notify you of any changes by posting the new Terms and Conditions on this page.
 
-These terms and conditions are effective as of 2021-04-19
+These terms and conditions are effective as of 2025-04-19
 
 **Contact Us**
 

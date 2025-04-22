@@ -8,12 +8,12 @@ const APIURL = 'https://opentdb.com/api.php'
  * Api Request for new Question
  * @returns ApiResponse
  */
-export async function getQuestion(){
+export async function getQuestions(){
     let difficulty = (await Preferences.get({key: 'difficulty'})).value;
     let category = (await Preferences.get({key: 'category'})).value;
 
     let params = {
-        amount: 1,
+        amount: 10,
         type: 'multiple'
     }
 

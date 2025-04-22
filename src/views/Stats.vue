@@ -21,11 +21,12 @@
                               v-if="getSum(getTotal(true), getTotal(false)) > 0"></ion-progress-bar>
           </ion-card-content>
         </ion-card>
+
         <!-- Each Category -->
         <div v-for="(stats, cat) in stats" v-bind:key="cat">
           <div v-if=" cat !== 'count'">
             <ion-item-divider>
-              <h4><b>{{ cat }}</b></h4>
+              <h4><b><span v-html="cat"></span></b></h4>
             </ion-item-divider>
 
             <div style="padding: 10px">
@@ -50,9 +51,16 @@
             </div>
           </div>
         </div>
-
-
       </div>
+
+      <ion-card>
+        <ion-card-content>
+          <ion-button expand="block" color="danger" v-on:click="resetStats">
+            Reset Stats
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
+
       <!-- Return Button -->
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
         <ion-fab-button v-on:click="gotToStart">
@@ -72,15 +80,16 @@ import {
   IonCardHeader,
   IonFab,
   IonFabButton,
-  IonIcon, IonItemDivider, IonProgressBar
+  IonIcon, IonItemDivider, IonProgressBar, IonCardTitle, IonButton
 } from "@ionic/vue";
 import {Preferences} from '@capacitor/preferences';
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
+import {resetStats} from "@/services/stats";
 
 
 export default {
-  name: "Stats",
+  name: "StatsPage",
   components: {
     IonSpinner,
     IonPage,
@@ -89,7 +98,7 @@ export default {
     IonCardHeader,
     IonFab,
     IonFabButton, IonProgressBar,
-    IonIcon, IonItemDivider
+    IonIcon, IonItemDivider, IonCardTitle, IonButton
   },
   data() {
     return {
@@ -156,6 +165,12 @@ export default {
         }
       }
       return sum;
+    },
+    async resetStats() {
+      this.loading = true
+      await resetStats()
+      this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
+      this.loading = false
     }
   }
 }
