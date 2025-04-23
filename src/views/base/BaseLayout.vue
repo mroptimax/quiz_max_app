@@ -23,7 +23,7 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <b>v. 1.2.0</b>
+            <b>{{ env.version }}</b>
           </ion-col>
           <ion-col>
             <b>by mroptimax</b>
@@ -45,6 +45,7 @@ import {
   IonCol,
   IonRow, IonGrid
 } from '@ionic/vue';
+import env from "/env";
 
 export default {
   name: "BaseLayout",
@@ -57,6 +58,11 @@ export default {
     IonCol,
     IonRow,
     IonGrid
+  },
+  setup() {
+    return {
+      env
+    }
   },
   data() {
     return {

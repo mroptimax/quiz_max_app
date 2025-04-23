@@ -16,10 +16,9 @@
           </ion-card-header>
         </ion-card>
 
-        <h2 style="text-align: center"><b>Difficulty</b></h2>
         <ion-item lines="full">
           <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
-                      @ionChange="setDifficulty">
+                      @ionChange="setDifficulty" label="Difficulty">
             <ion-select-option value="rand">Random</ion-select-option>
             <ion-select-option value="easy">Easy</ion-select-option>
             <ion-select-option value="medium">Medium</ion-select-option>
@@ -27,10 +26,9 @@
           </ion-select>
         </ion-item>
 
-        <h2 style="text-align: center"><b>Category</b></h2>
         <ion-item lines="full">
           <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
-                      @ionChange="setCategory">
+                      @ionChange="setCategory" label="Category">
             <ion-select-option value="rand">Random</ion-select-option>
             <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
               {{ cat.name }}
@@ -176,6 +174,7 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5px;
 }
 
 #start_button {

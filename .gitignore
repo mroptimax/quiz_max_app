@@ -1,5 +1,7 @@
 /android_key/
-/android/
 /dist/
 /node_modules/
 /.idea
+/android/app/release/baselineProfiles/0/app-release.dm
+/android/app/release/baselineProfiles/1/app-release.dm
+/android/app/release/output-metadata.json

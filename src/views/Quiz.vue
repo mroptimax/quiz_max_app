@@ -93,10 +93,6 @@ export default {
       loadedQuestions: [],
     }
   },
-  mounted() {
-    this.loadedQuestions = []
-    this.getNewQuestion()
-  },
   ionViewDidEnter() {
     this.loadedQuestions = []
     this.getNewQuestion()
