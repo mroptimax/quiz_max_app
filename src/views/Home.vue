@@ -2,50 +2,65 @@
   <ion-page>
     <base-layout>
       <div id="container">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title style="text-align: center">
-              {{ points }} Points
-            </ion-card-title>
-            <ion-card-subtitle style="text-align: center" v-if="bestStreak > 0">
-              <ion-icon :icon="flame"/> Best streak: {{ bestStreak }}
-            </ion-card-subtitle>
-            <ion-card-content>
-              <ion-button v-on:click="goToStats" expand="block">
-                <ion-icon :icon="statsChart"/>
-                Stats
-              </ion-button>
-            </ion-card-content>
-          </ion-card-header>
+
+        <!-- Score -->
+        <ion-card class="score-card">
+          <ion-card-content>
+            <div class="points">{{ points }}</div>
+            <div class="points-label">Points</div>
+            <div class="best-streak" v-if="bestStreak > 0">
+              <ion-icon :icon="flame" color="warning"/>
+              Best streak: <b>{{ bestStreak }}</b>
+            </div>
+            <ion-button v-on:click="goToStats" fill="outline" expand="block" class="stats-button">
+              <ion-icon :icon="statsChart" slot="start"/>
+              Stats
+            </ion-button>
+          </ion-card-content>
         </ion-card>
 
-        <ion-item lines="full">
-          <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
-                      @ionChange="setDifficulty" label="Difficulty">
-            <ion-select-option value="rand">Random</ion-select-option>
-            <ion-select-option value="easy">Easy</ion-select-option>
-            <ion-select-option value="medium">Medium</ion-select-option>
-            <ion-select-option value="hard">Hard</ion-select-option>
-          </ion-select>
-        </ion-item>
+        <!-- Settings -->
+        <ion-card class="settings-card">
+          <ion-card-header>
+            <ion-card-subtitle>Settings</ion-card-subtitle>
+          </ion-card-header>
+          <ion-list>
+            <ion-item lines="full">
+              <ion-select v-model="settings.difficulty" interface="action-sheet" cancel-text="Cancel"
+                          @ionChange="setDifficulty" label="Difficulty">
+                <ion-select-option value="rand">Random</ion-select-option>
+                <ion-select-option value="easy">Easy</ion-select-option>
+                <ion-select-option value="medium">Medium</ion-select-option>
+                <ion-select-option value="hard">Hard</ion-select-option>
+              </ion-select>
+            </ion-item>
 
-        <ion-item lines="full">
-          <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
-                      @ionChange="setCategory" label="Category">
-            <ion-select-option value="rand">Random</ion-select-option>
-            <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
-              {{ cat.name }}
-            </ion-select-option>
-          </ion-select>
-        </ion-item>
-
-        <div id="start_button_box">
-          <ion-button size="large" expand="block" v-on:click="startQuiz" color="success" id="start_button">
-            <b>Start Quiz</b>
-          </ion-button>
-        </div>
+            <ion-item lines="none">
+              <ion-select v-model="settings.category" interface="action-sheet" cancel-text="Cancel"
+                          @ionChange="setCategory" label="Category">
+                <ion-select-option value="rand">Random</ion-select-option>
+                <ion-select-option v-for="cat in categories" :value="cat.param" v-bind:key="cat.param">
+                  {{ cat.name }}
+                </ion-select-option>
+              </ion-select>
+            </ion-item>
+          </ion-list>
+        </ion-card>
 
       </div>
+
+      <!-- Start, in the footer so it is always visible regardless of screen size -->
+      <template #footer>
+        <ion-button size="large" expand="block" v-on:click="startQuiz" color="success" id="start_button">
+          <b>Start Quiz</b>
+        </ion-button>
+        <p class="footer-info">
+          {{ env.version }} · by mroptimax ·
+          <a href="https://github.com/mroptimax/quiz_max_app#privacy-policy" target="_blank" rel="noopener">
+            Privacy Policy
+          </a>
+        </p>
+      </template>
     </base-layout>
   </ion-page>
 </template>
@@ -59,16 +74,16 @@ import {
   IonSelectOption,
   IonCard,
   IonCardHeader,
-  IonCardTitle,
   IonCardSubtitle,
   IonCardContent,
   IonIcon,
-  IonButton, IonItem
+  IonButton, IonItem, IonList
 } from '@ionic/vue';
 import BaseLayout from "@/views/base/BaseLayout";
 import {Preferences} from '@capacitor/preferences';
 import {getCategories} from "@/services/questions";
 import {getStreak, setupStats} from "@/services/stats";
+import env from "/env";
 
 
 export default {
@@ -80,11 +95,15 @@ export default {
     IonSelectOption,
     IonCard,
     IonCardHeader,
-    IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
     IonIcon,
-    IonButton, IonItem
+    IonButton, IonItem, IonList
+  },
+  setup() {
+    return {
+      env
+    }
   },
   data() {
     return {
@@ -154,46 +173,67 @@ export default {
 </script>
 
 <style scoped>
-/* vertically centered, but grows and scrolls when the screen is too small */
-#container {
+.score-card {
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100%;
 }
 
-#container strong {
-  font-size: 20px;
-  line-height: 26px;
+.points {
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ion-color-primary);
 }
 
-#container p {
-  font-size: 16px;
-  line-height: 22px;
-
-  color: #8c8c8c;
-
-  margin: 0;
+.points-label {
+  margin-top: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ion-color-step-600, #666666);
 }
 
-#container a {
-  text-decoration: none;
-}
-
-#start_button_box {
+.best-streak {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5px;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 15px;
+}
+
+.stats-button {
+  margin-top: 16px;
+}
+
+.settings-card ion-card-header {
+  padding-bottom: 0;
 }
 
 #start_button {
-  padding: 0 15px;
-  width: 200px;
-  height: 150px;
-  --border-radius: 50%;
+  height: 60px;
+  margin: 0;
+  --border-radius: 14px;
+  --box-shadow: 0 4px 12px rgba(var(--ion-color-success-rgb), 0.4);
+  font-size: 20px;
   color: white;
 }
 
+/* small phones: more room for the settings */
+@media (max-height: 700px) {
+  .points {
+    font-size: 44px;
+  }
+}
+
+.footer-info {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--ion-color-step-500, #8c8c8c);
+}
+
+.footer-info a {
+  color: inherit;
+}
 </style>

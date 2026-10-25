@@ -3,9 +3,18 @@
   <!-- Header -->
   <ion-header>
     <ion-toolbar>
-      <ion-title class="hcenter" v-on:click="goToStart">
+      <ion-buttons slot="start" v-if="back">
+        <ion-button v-on:click="goToStart" aria-label="Back">
+          <ion-icon slot="icon-only" :icon="arrowBack"/>
+        </ion-button>
+      </ion-buttons>
+      <ion-title class="hcenter title" v-on:click="goToStart">
         Quiz Max
       </ion-title>
+      <!-- same width as the back button, keeps the title centered -->
+      <ion-buttons slot="end" v-if="back">
+        <div class="back-spacer"/>
+      </ion-buttons>
     </ion-toolbar>
   </ion-header>
 
@@ -14,35 +23,29 @@
     <slot/>
   </ion-content>
 
-  <!-- Footer -->
-  <ion-footer>
+  <!-- Footer, only for pages that pass one -->
+  <ion-footer v-if="$slots.footer">
     <ion-toolbar>
-      <ion-grid>
-        <ion-row>
-          <ion-col>
-            <b>{{ env.version }}</b>
-          </ion-col>
-          <ion-col>
-            <b>by mroptimax</b>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+      <div class="footer-content">
+        <slot name="footer"/>
+      </div>
     </ion-toolbar>
   </ion-footer>
 
 </template>
 <script>
 import router from "@/router";
+import {arrowBack} from "ionicons/icons";
 import {
   IonHeader,
   IonTitle,
   IonContent,
   IonToolbar,
   IonFooter,
-  IonCol,
-  IonRow, IonGrid
+  IonButtons,
+  IonButton,
+  IonIcon
 } from '@ionic/vue';
-import env from "/env";
 
 export default {
   name: "BaseLayout",
@@ -52,13 +55,20 @@ export default {
     IonContent,
     IonToolbar,
     IonFooter,
-    IonCol,
-    IonRow,
-    IonGrid
+    IonButtons,
+    IonButton,
+    IonIcon
   },
-  setup() {
+  props: {
+    // shows a back button that leads to the start page
+    back: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
     return {
-      env
+      arrowBack
     }
   },
   methods: {
@@ -68,3 +78,17 @@ export default {
   }
 }
 </script>
+<style scoped>
+.title {
+  font-weight: 700;
+  color: var(--ion-color-primary);
+}
+
+.back-spacer {
+  width: 48px;
+}
+
+.footer-content {
+  padding: 8px 16px;
+}
+</style>

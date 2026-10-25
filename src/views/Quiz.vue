@@ -1,36 +1,39 @@
 <template>
   <ion-page>
-    <base-layout>
+    <base-layout back>
 
       <!-- Question Loaded -->
       <div v-if="question && !loading">
-        <ion-card color="primary">
-          <ion-card-header>
-            <ion-card-subtitle>
-              <ion-badge color="tertiary">{{ decoder(question.category) }}</ion-badge>
-              <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">
-                {{ question.difficulty }}
-              </ion-badge>
-              <ion-badge color="light" class="streak" v-if="streak > 0">
-                <ion-icon :icon="flame"/> {{ streak }}
-              </ion-badge>
-            </ion-card-subtitle>
+        <!-- always one row: a long category name wraps inside its own badge, difficulty + streak stay on the right -->
+        <div class="badges">
+          <ion-badge color="tertiary" class="category">{{ decoder(question.category) }}</ion-badge>
+          <div class="meta">
+            <ion-badge v-bind:color="setBadgeColor(question.difficulty)">
+              {{ capitalize(question.difficulty) }}
+            </ion-badge>
+            <!-- light, so it can't be mistaken for the yellow "Medium" badge -->
+            <ion-badge color="light" class="streak" v-if="streak > 0">
+              <ion-icon :icon="flame" color="warning"/> {{ streak }}
+            </ion-badge>
+          </div>
+        </div>
 
-          </ion-card-header>
+        <ion-card color="primary" class="question-card">
           <ion-card-content>
-            <h2>{{ decoder(question.question) }}</h2>
+            <h2 class="question">{{ decoder(question.question) }}</h2>
           </ion-card-content>
         </ion-card>
 
         <ion-card v-for="(ans) in answers" v-bind:key="ans"
+                  class="answer"
+                  v-bind:class="{dimmed: getAnswerState(ans) === 'dimmed'}"
                   v-bind:color="getCardColor(ans)"
+                  v-bind:button="!finished"
                   v-on:click="checkSolution(ans)">
-          <ion-card-content>
-            <ion-card-subtitle v-if="getCardColor(ans) === 'success' && right && finished">
-              <b> Correct! +{{ points }} Points!</b>
-              <div v-if="newBest"><b>New best streak: {{ streak }}!</b></div>
-            </ion-card-subtitle>
-            <h2> {{ decoder(ans) }}</h2>
+          <ion-card-content class="answer-content">
+            <span>{{ decoder(ans) }}</span>
+            <ion-icon v-if="getAnswerState(ans) === 'correct'" :icon="checkmarkCircle" class="answer-icon"/>
+            <ion-icon v-else-if="getAnswerState(ans) === 'wrong'" :icon="closeCircle" class="answer-icon"/>
           </ion-card-content>
         </ion-card>
       </div>
@@ -40,7 +43,7 @@
         <ion-card-content>
           <p>{{ error }}</p>
           <ion-button color="light" v-on:click="retry" style="margin-top: 10px">
-            try again
+            Try again
           </ion-button>
         </ion-card-content>
       </ion-card>
@@ -50,15 +53,19 @@
         <ion-spinner name="crescent"/>
       </ion-card>
 
-      <!-- Nav Buttons -->
-      <div id="container">
-        <ion-button size="large" v-on:click="toHome" color="light">
-          return
+      <!-- Result + Continue, only after answering -->
+      <template v-if="finished" #footer>
+        <div class="result" v-bind:class="right ? 'result-right' : 'result-wrong'">
+          <span v-if="right">Correct! +{{ points }} {{ points === 1 ? 'point' : 'points' }}</span>
+          <span v-else>Wrong answer</span>
+          <span v-if="newBest" class="new-best">
+            · <ion-icon :icon="flame" color="warning"/> New best streak: {{ streak }}!
+          </span>
+        </div>
+        <ion-button expand="block" size="large" v-on:click="getNewQuestion">
+          Continue
         </ion-button>
-        <ion-button size="large" v-if="finished" v-on:click="getNewQuestion" style="padding-left: 5px">
-          continue
-        </ion-button>
-      </div>
+      </template>
 
     </base-layout>
   </ion-page>
@@ -66,10 +73,9 @@
 
 <script>
 import BaseLayout from "@/views/base/BaseLayout";
-import router from "@/router";
 import {Preferences} from '@capacitor/preferences';
 import {Haptics, NotificationType} from '@capacitor/haptics';
-import {flame} from "ionicons/icons";
+import {checkmarkCircle, closeCircle, flame} from "ionicons/icons";
 import {addDataToStats, getStreak, updateStreak} from "@/services/stats";
 import {getQuestions} from "@/services/questions";
 import {decodeHtml} from "@/services/text";
@@ -80,8 +86,6 @@ const RETRY_DELAY = 5000
 import {
   IonPage,
   IonCard,
-  IonCardHeader,
-  IonCardSubtitle,
   IonButton,
   IonSpinner,
   IonBadge,
@@ -95,8 +99,6 @@ export default {
     BaseLayout,
     IonPage,
     IonCard,
-    IonCardHeader,
-    IonCardSubtitle,
     IonButton,
     IonSpinner,
     IonBadge,
@@ -121,6 +123,8 @@ export default {
       streak: 0,
       newBest: false,
       flame,
+      checkmarkCircle,
+      closeCircle,
     }
   },
   async ionViewDidEnter() {
@@ -136,9 +140,6 @@ export default {
     this.retryTimer = null
   },
   methods: {
-    toHome() {
-      router.push('/home');
-    },
     mixAnswers() {
       this.answers.push(this.question.incorrect_answers[0])
       this.answers.push(this.question.incorrect_answers[1])
@@ -248,32 +249,152 @@ export default {
     decoder(str) {
       return decodeHtml(str);
     },
+    capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    },
     vibrate(right) {
       // fire and forget, devices/browsers without vibration just ignore it
       Haptics.notification({type: right ? NotificationType.Success : NotificationType.Error})
           .catch(() => {})
     },
-    getCardColor(ans) {
-      if (ans === this.question.correct_answer && this.finished) {
-        return 'success'
-      } else if (this.selected === ans && this.finished) {
-        return 'danger'
+    /**
+     * open before answering, afterwards correct / wrong (the selected one) / dimmed (the rest)
+     */
+    getAnswerState(ans) {
+      if (!this.finished) {
+        return 'open'
       }
-      return 'medium'
+      if (ans === this.question.correct_answer) {
+        return 'correct'
+      }
+      return this.selected === ans ? 'wrong' : 'dimmed'
+    },
+    getCardColor(ans) {
+      switch (this.getAnswerState(ans)) {
+        case 'correct':
+          return 'success'
+        case 'wrong':
+          return 'danger'
+        default:
+          return undefined
+      }
     }
   },
 }
 </script>
 
 <style scoped>
-#container {
-  text-align: center;
-  left: 0;
-  right: 0;
-  padding-top: 10px;
+.badges {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 16px 16px 0;
+}
+
+.badges ion-badge {
+  padding: 5px 10px;
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.category {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: left;
+  border-radius: 10px;
+}
+
+.meta {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.meta ion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .streak {
-  float: right;
+  border: 1px solid var(--ion-color-warning);
+}
+
+.question-card {
+  margin-top: 8px;
+}
+
+.question-card ion-card-content {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.question {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.answer {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  box-shadow: none;
+  border: 2px solid var(--ion-color-light-shade);
+}
+
+.answer.ion-color {
+  border-color: transparent;
+}
+
+.answer.dimmed {
+  opacity: 0.5;
+}
+
+.answer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.answer:not(.ion-color) .answer-content {
+  color: var(--ion-text-color, #000000);
+}
+
+.answer-icon {
+  flex-shrink: 0;
+  font-size: 26px;
+}
+
+.result {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.result-right {
+  color: var(--ion-color-success-shade);
+}
+
+.result-wrong {
+  color: var(--ion-color-danger);
+}
+
+.new-best {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ion-text-color, #000000);
 }
 </style>
