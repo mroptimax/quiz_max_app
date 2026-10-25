@@ -1,13 +1,6 @@
 {
   "appId": "mroptimax.quiz.app",
   "appName": "Quiz Max",
-  "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "dist",
-  "plugins": {
-    "SplashScreen": {
-      "launchShowDuration": 0
-    }
-  },
-  "cordova": {}
+  "webDir": "dist"
 }

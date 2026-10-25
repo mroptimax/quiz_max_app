@@ -7,7 +7,7 @@
         <ion-card color="primary">
           <ion-card-header>
             <ion-card-subtitle>
-              <ion-badge color="tertiary"><span v-html="question.category"></span></ion-badge>
+              <ion-badge color="tertiary">{{ decoder(question.category) }}</ion-badge>
               <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">
                 {{ question.difficulty }}
               </ion-badge>
@@ -23,13 +23,23 @@
                   v-bind:color="getCardColor(ans)"
                   v-on:click="checkSolution(ans)">
           <ion-card-content>
-            <ion-card-subtitle v-if="getCardColor(ans) === 'success' && rigth && finished">
+            <ion-card-subtitle v-if="getCardColor(ans) === 'success' && right && finished">
               <b> Correct! +{{ points }} Points!</b>
             </ion-card-subtitle>
             <h2> {{ decoder(ans) }}</h2>
           </ion-card-content>
         </ion-card>
       </div>
+
+      <!-- Error -->
+      <ion-card v-else-if="error" color="danger" class="hcenter">
+        <ion-card-content>
+          <p>{{ error }}</p>
+          <ion-button color="light" v-on:click="retry" style="margin-top: 10px">
+            try again
+          </ion-button>
+        </ion-card-content>
+      </ion-card>
 
       <!-- Loading -->
       <ion-card v-else class="hcenter">
@@ -56,6 +66,10 @@ import router from "@/router";
 import {Preferences} from '@capacitor/preferences';
 import {addDataToStats} from "@/services/stats";
 import {getQuestions} from "@/services/questions";
+import {decodeHtml} from "@/services/text";
+
+const MAX_RETRIES = 3
+const RETRY_DELAY = 5000
 
 import {
   IonPage,
@@ -87,15 +101,27 @@ export default {
       finished: false,
       answers: [],
       selected: null,
-      rigth: true,
+      right: true,
       loading: false,
       points: 0,
       loadedQuestions: [],
+      checking: false,
+      error: null,
+      retries: 0,
+      retryTimer: null,
+      active: false,
     }
   },
   ionViewDidEnter() {
+    this.active = true
+    this.retries = 0
     this.loadedQuestions = []
     this.getNewQuestion()
+  },
+  ionViewWillLeave() {
+    this.active = false
+    clearTimeout(this.retryTimer)
+    this.retryTimer = null
   },
   methods: {
     toHome() {
@@ -124,50 +150,87 @@ export default {
       }
     },
     async checkSolution(ans) {
-      this.selected = ans
-      this.rigth = ans === this.question.correct_answer;
-      let add = 0
-      if (this.question.difficulty === 'medium') {
-        add = 2
-      } else if (this.question.difficulty === 'hard') {
-        add = 3
-      } else if (this.question.difficulty === 'easy') {
-        add = 1
+      // only one answer per question, also while the previous click is still being saved
+      if (this.finished || this.checking) {
+        return
       }
-      this.points = add
-      if (this.rigth) {
-        let points = parseInt((await Preferences.get({key: 'points'})).value)
-        points = points + add
-        await Preferences.set({key: 'points', value: String(points)})
+      this.checking = true
+      try {
+        this.selected = ans
+        this.right = ans === this.question.correct_answer;
+        let add = 0
+        if (this.question.difficulty === 'medium') {
+          add = 2
+        } else if (this.question.difficulty === 'hard') {
+          add = 3
+        } else if (this.question.difficulty === 'easy') {
+          add = 1
+        }
+        this.points = add
+        if (this.right) {
+          let points = parseInt((await Preferences.get({key: 'points'})).value) || 0
+          points = points + add
+          await Preferences.set({key: 'points', value: String(points)})
+        }
+        await addDataToStats(this.question.category, this.question.difficulty, this.right)
+        this.finished = true
+      } finally {
+        this.checking = false
       }
-      await addDataToStats(this.question.category, this.question.difficulty, this.rigth)
-      this.finished = true
+    },
+    showQuestion(question) {
+      this.question = question
+      this.mixAnswers()
+      this.finished = false
+      this.loading = false
+    },
+    retry() {
+      this.retries = 0
+      this.getNewQuestion()
     },
     getNewQuestion() {
+      clearTimeout(this.retryTimer)
+      this.retryTimer = null
       this.loading = true
+      this.finished = false
+      this.error = null
       this.answers = []
       if (this.loadedQuestions.length > 0) {
-        this.question = this.loadedQuestions.pop()
-        this.mixAnswers()
-        this.finished = false
-        this.loading = false
+        this.showQuestion(this.loadedQuestions.pop())
         return
       }
       getQuestions().then((res) => {
+        if (!this.active) {
+          return
+        }
+        // 1 = not enough questions for the chosen category/difficulty, retrying won't help
+        if (res.data.response_code === 1) {
+          this.error = 'There are not enough questions for this category and difficulty. Please choose different settings.'
+          this.loading = false
+          return
+        }
+        if (res.data.response_code !== 0 || !res.data.results || res.data.results.length === 0) {
+          throw new Error('Unexpected API response code ' + res.data.response_code)
+        }
+        this.retries = 0
         this.loadedQuestions = res.data.results
-        this.question = this.loadedQuestions.pop()
-        this.mixAnswers()
-        this.finished = false
-        this.loading = false
-      }).catch(async (err) => {
+        this.showQuestion(this.loadedQuestions.pop())
+      }).catch((err) => {
         console.log(err)
-        setTimeout(() => {this.getNewQuestion()},5000);
+        if (!this.active) {
+          return
+        }
+        if (this.retries >= MAX_RETRIES) {
+          this.error = 'Questions could not be loaded. Please check your internet connection.'
+          this.loading = false
+          return
+        }
+        this.retries++
+        this.retryTimer = setTimeout(() => {this.getNewQuestion()}, RETRY_DELAY);
       })
     },
     decoder(str) {
-      let textArea = document.createElement('textarea');
-      textArea.innerHTML = str;
-      return textArea.value;
+      return decodeHtml(str);
     },
     getCardColor(ans) {
       if (ans === this.question.correct_answer && this.finished) {

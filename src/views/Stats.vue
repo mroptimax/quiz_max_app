@@ -23,24 +23,24 @@
         </ion-card>
 
         <!-- Each Category -->
-        <div v-for="(stats, cat) in stats" v-bind:key="cat">
-          <div v-if=" cat !== 'count'">
+        <div v-for="(catStats, cat) in stats" v-bind:key="cat">
+          <div v-if="cat !== 'count' && getSum(getCategoryTotal(catStats, true), getCategoryTotal(catStats, false)) > 0">
             <ion-item-divider>
-              <h4><b><span v-html="cat"></span></b></h4>
+              <h4><b>{{ decoder(cat) }}</b></h4>
             </ion-item-divider>
 
             <div style="padding: 10px">
               <!-- Category Total -->
               <div>
-                <b>Total ({{ getCategoryTotal(stats, false) + getCategoryTotal(stats, true) }}):
-                  {{ Math.round(progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats, false)) * 100) }}%</b>
-                <ion-progress-bar :value="progressNum(getCategoryTotal(stats, true), getCategoryTotal(stats,false))"
+                <b>Total ({{ getCategoryTotal(catStats, false) + getCategoryTotal(catStats, true) }}):
+                  {{ Math.round(progressNum(getCategoryTotal(catStats, true), getCategoryTotal(catStats, false)) * 100) }}%</b>
+                <ion-progress-bar :value="progressNum(getCategoryTotal(catStats, true), getCategoryTotal(catStats,false))"
                                   color="primary"
-                                  v-if="getSum(getCategoryTotal(stats, true), getCategoryTotal(stats,false)) > 0"></ion-progress-bar>
+                                  v-if="getSum(getCategoryTotal(catStats, true), getCategoryTotal(catStats,false)) > 0"></ion-progress-bar>
               </div>
 
               <!-- Each Difficulty in Category -->
-              <div v-for="(data, diff) in stats" v-bind:key="diff">
+              <div v-for="(data, diff) in catStats" v-bind:key="diff">
                 <div v-if="getSum(data.right, data.wrong) > 0" style="padding: 10px">
                   {{ diff }} ({{ getSum(data.right, data.wrong) }}):
                   {{ Math.round(progressNum(data.right, data.wrong) * 100) }}%
@@ -55,7 +55,7 @@
 
       <ion-card>
         <ion-card-content>
-          <ion-button expand="block" color="danger" v-on:click="resetStats">
+          <ion-button expand="block" color="danger" v-on:click="confirmReset">
             Reset Stats
           </ion-button>
         </ion-card-content>
@@ -63,7 +63,7 @@
 
       <!-- Return Button -->
       <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-        <ion-fab-button v-on:click="gotToStart">
+        <ion-fab-button v-on:click="goToStart">
           <ion-icon :icon="returnDownBack"></ion-icon>
         </ion-fab-button>
       </ion-fab>
@@ -80,12 +80,13 @@ import {
   IonCardHeader,
   IonFab,
   IonFabButton,
-  IonIcon, IonItemDivider, IonProgressBar, IonCardTitle, IonButton
+  IonIcon, IonItemDivider, IonProgressBar, IonCardTitle, IonButton,
+  alertController
 } from "@ionic/vue";
-import {Preferences} from '@capacitor/preferences';
 import {returnDownBack} from "ionicons/icons";
 import router from "@/router";
-import {resetStats} from "@/services/stats";
+import {getStats, resetStats} from "@/services/stats";
+import {decodeHtml} from "@/services/text";
 
 
 export default {
@@ -107,24 +108,24 @@ export default {
       returnDownBack
     }
   },
-  async mounted() {
+  // also runs on the first visit, so no extra loading in mounted() needed
+  async ionViewWillEnter() {
     this.loading = true
-    this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
-    this.loading = false
-  },
-  async ionViewDidEnter() {
-    this.loading = true
-    this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
+    this.stats = await getStats()
     this.loading = false
   },
   methods: {
     progressNum(right, wrong) {
-      return right / (right + wrong)
+      const sum = right + wrong
+      return sum > 0 ? right / sum : 0
+    },
+    decoder(str) {
+      return decodeHtml(str)
     },
     getSum(right, wrong) {
       return right + wrong
     },
-    gotToStart() {
+    goToStart() {
       router.push('/home');
     },
     getColor(diff) {
@@ -166,10 +167,30 @@ export default {
       }
       return sum;
     },
+    async confirmReset() {
+      const alert = await alertController.create({
+        header: 'Reset Stats?',
+        message: 'All stats and points will be deleted. This cannot be undone.',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          },
+          {
+            text: 'Reset',
+            role: 'destructive',
+            handler: () => {
+              this.resetStats()
+            }
+          }
+        ]
+      })
+      await alert.present()
+    },
     async resetStats() {
       this.loading = true
       await resetStats()
-      this.stats = JSON.parse((await Preferences.get({key: 'stats'})).value)
+      this.stats = await getStats()
       this.loading = false
     }
   }

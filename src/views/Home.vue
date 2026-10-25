@@ -9,7 +9,7 @@
             </ion-card-title>
             <ion-card-content>
               <ion-button v-on:click="goToStats" expand="block">
-                <ion-icon :icon="statsChart" size="medium"/>
+                <ion-icon :icon="statsChart"/>
                 Stats
               </ion-button>
             </ion-card-content>
@@ -108,21 +108,24 @@ export default {
 
     this.categories = getCategories()
 
-    const points = (await Preferences.get({key: 'points'})).value
-    if (points) {
-      this.points = points
-    } else {
-      await Preferences.set({key: 'points', value: '0'})
-      this.points = 0
-    }
     if (!stats) {
       await setupStats()
     }
   },
-  async updated() {
-    this.points = (await Preferences.get({key: 'points'})).value
+  // the page stays mounted while navigating, so refresh the points every time it is shown
+  async ionViewWillEnter() {
+    await this.loadPoints()
   },
   methods: {
+    async loadPoints() {
+      const points = (await Preferences.get({key: 'points'})).value
+      if (points) {
+        this.points = parseInt(points) || 0
+      } else {
+        await Preferences.set({key: 'points', value: '0'})
+        this.points = 0
+      }
+    },
     startQuiz() {
       router.push('/quiz');
     },
@@ -143,13 +146,13 @@ export default {
 </script>
 
 <style scoped>
+/* vertically centered, but grows and scrolls when the screen is too small */
 #container {
   text-align: center;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
 }
 
 #container strong {

@@ -1,14 +1,11 @@
 <template>
 
   <!-- Header -->
-  <ion-header :translucent="true">
+  <ion-header>
     <ion-toolbar>
-      <ion-row style="">
-        <ion-title class="hcenter" v-on:click="gotToStart">
-          Quiz Max
-        </ion-title>
-      </ion-row>
-
+      <ion-title class="hcenter" v-on:click="goToStart">
+        Quiz Max
+      </ion-title>
     </ion-toolbar>
   </ion-header>
 
@@ -64,18 +61,10 @@ export default {
       env
     }
   },
-  data() {
-    return {
-
-    }
-  },
   methods: {
-    gotToStart() {
+    goToStart() {
       router.push('/home');
     }
   }
 }
 </script>
-<style scoped>
-
-</style>
