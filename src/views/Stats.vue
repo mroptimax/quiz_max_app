@@ -170,7 +170,7 @@ export default {
     async confirmReset() {
       const alert = await alertController.create({
         header: 'Reset Stats?',
-        message: 'All stats and points will be deleted. This cannot be undone.',
+        message: 'All stats, points and streaks will be deleted. This cannot be undone.',
         buttons: [
           {
             text: 'Cancel',

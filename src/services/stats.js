@@ -73,8 +73,38 @@ export async function addDataToStats(category, difficulty, right) {
     await Preferences.set({key: 'stats', value: JSON.stringify(stats)})
 }
 
+/**
+ * returns the current streak of correct answers in a row and the best streak so far
+ * @returns {{streak: number, best: number}}
+ */
+export async function getStreak() {
+    return {
+        streak: parseInt((await Preferences.get({key: 'streak'})).value) || 0,
+        best: parseInt((await Preferences.get({key: 'bestStreak'})).value) || 0
+    }
+}
+
+/**
+ * counts the streak up on a correct answer, resets it on a wrong one
+ * @param right Bool
+ * @returns {{streak: number, best: number, newBest: boolean}}
+ */
+export async function updateStreak(right) {
+    let {streak, best} = await getStreak()
+    streak = right ? streak + 1 : 0
+    const newBest = streak > best
+    if (newBest) {
+        best = streak
+        await Preferences.set({key: 'bestStreak', value: String(best)})
+    }
+    await Preferences.set({key: 'streak', value: String(streak)})
+    return {streak, best, newBest}
+}
+
 export async function resetStats() {
     await Preferences.remove({key: 'stats'})
     await Preferences.set({key: 'points', value: '0'})
+    await Preferences.remove({key: 'streak'})
+    await Preferences.remove({key: 'bestStreak'})
     await setupStats()
 }

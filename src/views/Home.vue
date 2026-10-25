@@ -7,6 +7,9 @@
             <ion-card-title style="text-align: center">
               {{ points }} Points
             </ion-card-title>
+            <ion-card-subtitle style="text-align: center" v-if="bestStreak > 0">
+              <ion-icon :icon="flame"/> Best streak: {{ bestStreak }}
+            </ion-card-subtitle>
             <ion-card-content>
               <ion-button v-on:click="goToStats" expand="block">
                 <ion-icon :icon="statsChart"/>
@@ -49,7 +52,7 @@
 
 <script>
 import router from "@/router";
-import {statsChart} from "ionicons/icons";
+import {flame, statsChart} from "ionicons/icons";
 import {
   IonPage,
   IonSelect,
@@ -57,6 +60,7 @@ import {
   IonCard,
   IonCardHeader,
   IonCardTitle,
+  IonCardSubtitle,
   IonCardContent,
   IonIcon,
   IonButton, IonItem
@@ -64,7 +68,7 @@ import {
 import BaseLayout from "@/views/base/BaseLayout";
 import {Preferences} from '@capacitor/preferences';
 import {getCategories} from "@/services/questions";
-import {setupStats} from "@/services/stats";
+import {getStreak, setupStats} from "@/services/stats";
 
 
 export default {
@@ -77,6 +81,7 @@ export default {
     IonCard,
     IonCardHeader,
     IonCardTitle,
+    IonCardSubtitle,
     IonCardContent,
     IonIcon,
     IonButton, IonItem
@@ -84,6 +89,8 @@ export default {
   data() {
     return {
       points: 0,
+      bestStreak: 0,
+      flame,
       settings: {
         difficulty: 'rand',
         category: 'rand'
@@ -112,9 +119,10 @@ export default {
       await setupStats()
     }
   },
-  // the page stays mounted while navigating, so refresh the points every time it is shown
+  // the page stays mounted while navigating, so refresh points and streak every time it is shown
   async ionViewWillEnter() {
     await this.loadPoints()
+    this.bestStreak = (await getStreak()).best
   },
   methods: {
     async loadPoints() {

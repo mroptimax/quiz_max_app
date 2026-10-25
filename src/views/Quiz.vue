@@ -11,6 +11,9 @@
               <ion-badge v-bind:color="setBadgeColor(question.difficulty)" style="margin-left: 5px">
                 {{ question.difficulty }}
               </ion-badge>
+              <ion-badge color="light" class="streak" v-if="streak > 0">
+                <ion-icon :icon="flame"/> {{ streak }}
+              </ion-badge>
             </ion-card-subtitle>
 
           </ion-card-header>
@@ -25,6 +28,7 @@
           <ion-card-content>
             <ion-card-subtitle v-if="getCardColor(ans) === 'success' && right && finished">
               <b> Correct! +{{ points }} Points!</b>
+              <div v-if="newBest"><b>New best streak: {{ streak }}!</b></div>
             </ion-card-subtitle>
             <h2> {{ decoder(ans) }}</h2>
           </ion-card-content>
@@ -64,7 +68,9 @@
 import BaseLayout from "@/views/base/BaseLayout";
 import router from "@/router";
 import {Preferences} from '@capacitor/preferences';
-import {addDataToStats} from "@/services/stats";
+import {Haptics, NotificationType} from '@capacitor/haptics';
+import {flame} from "ionicons/icons";
+import {addDataToStats, getStreak, updateStreak} from "@/services/stats";
 import {getQuestions} from "@/services/questions";
 import {decodeHtml} from "@/services/text";
 
@@ -79,7 +85,8 @@ import {
   IonButton,
   IonSpinner,
   IonBadge,
-  IonCardContent
+  IonCardContent,
+  IonIcon
 } from "@ionic/vue";
 
 export default {
@@ -93,7 +100,8 @@ export default {
     IonButton,
     IonSpinner,
     IonBadge,
-    IonCardContent
+    IonCardContent,
+    IonIcon
   },
   data() {
     return {
@@ -110,13 +118,17 @@ export default {
       retries: 0,
       retryTimer: null,
       active: false,
+      streak: 0,
+      newBest: false,
+      flame,
     }
   },
-  ionViewDidEnter() {
+  async ionViewDidEnter() {
     this.active = true
     this.retries = 0
     this.loadedQuestions = []
     this.getNewQuestion()
+    this.streak = (await getStreak()).streak
   },
   ionViewWillLeave() {
     this.active = false
@@ -158,6 +170,7 @@ export default {
       try {
         this.selected = ans
         this.right = ans === this.question.correct_answer;
+        this.vibrate(this.right)
         let add = 0
         if (this.question.difficulty === 'medium') {
           add = 2
@@ -173,6 +186,9 @@ export default {
           await Preferences.set({key: 'points', value: String(points)})
         }
         await addDataToStats(this.question.category, this.question.difficulty, this.right)
+        const streak = await updateStreak(this.right)
+        this.streak = streak.streak
+        this.newBest = streak.newBest
         this.finished = true
       } finally {
         this.checking = false
@@ -232,6 +248,11 @@ export default {
     decoder(str) {
       return decodeHtml(str);
     },
+    vibrate(right) {
+      // fire and forget, devices/browsers without vibration just ignore it
+      Haptics.notification({type: right ? NotificationType.Success : NotificationType.Error})
+          .catch(() => {})
+    },
     getCardColor(ans) {
       if (ans === this.question.correct_answer && this.finished) {
         return 'success'
@@ -250,5 +271,9 @@ export default {
   left: 0;
   right: 0;
   padding-top: 10px;
+}
+
+.streak {
+  float: right;
 }
 </style>
