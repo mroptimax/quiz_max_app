@@ -97,3 +97,13 @@ export async function getQuestions(){
 export function getCategories(){
     return categories.categories
 }
+
+/**
+ * returns the API parameter of a category by its name in the stats (HTML-encoded "raw" or plain name)
+ * @param statsKey
+ * @returns param or null for categories that are not in the list
+ */
+export function getCategoryParam(statsKey){
+    const cat = categories.categories.find(c => (c.raw ?? c.name) === statsKey)
+    return cat ? cat.param : null
+}

@@ -37,6 +37,41 @@
           No questions answered yet. Start a quiz to see your stats here.
         </p>
 
+        <!-- Strengths & Weaknesses -->
+        <ion-card v-if="getSum(getTotal(true), getTotal(false)) > 0">
+          <ion-card-header>
+            <ion-card-title class="category-title">Strengths &amp; weaknesses</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <template v-if="insights">
+              <div class="insight">
+                <ion-icon :icon="trophy" color="success" class="insight-icon"/>
+                <div class="insight-text">
+                  <div class="insight-label">Best category</div>
+                  <div class="insight-name">{{ decoder(insights.best.key) }}</div>
+                </div>
+                <div class="insight-value">{{ insights.best.percent }}%</div>
+              </div>
+              <div class="insight">
+                <ion-icon :icon="trendingDown" color="danger" class="insight-icon"/>
+                <div class="insight-text">
+                  <div class="insight-label">Weakest category</div>
+                  <div class="insight-name">{{ decoder(insights.weakest.key) }}</div>
+                </div>
+                <div class="insight-value">{{ insights.weakest.percent }}%</div>
+              </div>
+              <ion-button v-if="insights.weakest.param" expand="block" fill="outline" class="practice-button"
+                          v-on:click="practice(insights.weakest.param)">
+                Practice weakest category
+              </ion-button>
+            </template>
+            <p v-else class="insight-hint">
+              Answer at least {{ minAnswers }} questions in two different categories
+              to see your best and weakest category.
+            </p>
+          </ion-card-content>
+        </ion-card>
+
         <!-- Each Category -->
         <template v-for="(catStats, cat) in stats" v-bind:key="cat">
           <ion-card v-if="cat !== 'count' && getSum(getCategoryTotal(catStats, true), getCategoryTotal(catStats, false)) > 0">
@@ -90,9 +125,15 @@ import {
   IonIcon, IonProgressBar, IonCardTitle, IonButton,
   alertController
 } from "@ionic/vue";
-import {flame} from "ionicons/icons";
+import {flame, trendingDown, trophy} from "ionicons/icons";
+import {Preferences} from '@capacitor/preferences';
+import router from "@/router";
 import {getStats, getStreak, resetStats} from "@/services/stats";
+import {getCategoryParam} from "@/services/questions";
 import {decodeHtml} from "@/services/text";
+
+// a category only counts as best/weakest with enough answers, one lucky answer shouldn't make it the best
+const MIN_ANSWERS = 3
 
 
 export default {
@@ -114,7 +155,34 @@ export default {
       stats: null,
       bestStreak: 0,
       loading: true,
-      flame
+      minAnswers: MIN_ANSWERS,
+      flame,
+      trophy,
+      trendingDown
+    }
+  },
+  computed: {
+    /**
+     * best and weakest category by correct rate, or null if fewer than two categories have enough answers
+     */
+    insights() {
+      if (!this.stats) {
+        return null
+      }
+      const ranked = Object.entries(this.stats)
+          .filter(([key]) => key !== 'count')
+          .map(([key, data]) => {
+            const right = this.getCategoryTotal(data, true)
+            const wrong = this.getCategoryTotal(data, false)
+            return {key, total: right + wrong, percent: this.percent(right, wrong), param: getCategoryParam(key)}
+          })
+          .filter(cat => cat.total >= MIN_ANSWERS)
+          // on equal rates, more answers are the more reliable result
+          .sort((a, b) => b.percent - a.percent || b.total - a.total)
+      if (ranked.length < 2) {
+        return null
+      }
+      return {best: ranked[0], weakest: ranked[ranked.length - 1]}
     }
   },
   // also runs on the first visit, so no extra loading in mounted() needed
@@ -178,6 +246,10 @@ export default {
         }
       }
       return sum;
+    },
+    async practice(param) {
+      await Preferences.set({key: 'category', value: param})
+      router.push('/quiz')
     },
     async confirmReset() {
       const alert = await alertController.create({
@@ -249,6 +321,51 @@ export default {
 
 .category-title {
   font-size: 18px;
+}
+
+.insight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.insight-icon {
+  flex-shrink: 0;
+  font-size: 26px;
+}
+
+.insight-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.insight-label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.insight-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ion-text-color, #000000);
+}
+
+.insight-value {
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--ion-text-color, #000000);
+}
+
+.practice-button {
+  margin-top: 10px;
+}
+
+.insight-hint {
+  margin: 0;
 }
 
 .line {

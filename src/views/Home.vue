@@ -114,36 +114,37 @@ export default {
         difficulty: 'rand',
         category: 'rand'
       },
-      categories: [],
+      categories: getCategories(),
       statsChart
     }
   },
   async mounted() {
-    this.settings.difficulty = (await Preferences.get({key: 'difficulty'})).value
-    this.settings.category = (await Preferences.get({key: 'category'})).value
     let stats = (await Preferences.get({key: 'stats'})).value
-
-    if (!this.settings.difficulty) {
-      await Preferences.set({key: 'difficulty', value: 'rand'})
-      this.settings.difficulty = 'rand'
-    }
-    if (!this.settings.category) {
-      await Preferences.set({key: 'category', value: 'rand'})
-      this.settings.category = 'rand'
-    }
-
-    this.categories = getCategories()
-
     if (!stats) {
       await setupStats()
     }
   },
-  // the page stays mounted while navigating, so refresh points and streak every time it is shown
+  // the page stays mounted while navigating, so refresh everything that other pages can change
+  // (points, streak, and the category, which "Practice" on the stats page sets)
   async ionViewWillEnter() {
+    await this.loadSettings()
     await this.loadPoints()
     this.bestStreak = (await getStreak()).best
   },
   methods: {
+    async loadSettings() {
+      this.settings.difficulty = (await Preferences.get({key: 'difficulty'})).value
+      this.settings.category = (await Preferences.get({key: 'category'})).value
+
+      if (!this.settings.difficulty) {
+        await Preferences.set({key: 'difficulty', value: 'rand'})
+        this.settings.difficulty = 'rand'
+      }
+      if (!this.settings.category) {
+        await Preferences.set({key: 'category', value: 'rand'})
+        this.settings.category = 'rand'
+      }
+    },
     async loadPoints() {
       const points = (await Preferences.get({key: 'points'})).value
       if (points) {
